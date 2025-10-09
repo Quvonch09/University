@@ -19,8 +19,6 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    private final SubCategoryRepository subCategoryRepository;
-
     public ApiResponse<String> addCategory(ReqCategory req) {
 
         boolean b = categoryRepository.existsByName(req.getName());

@@ -9,7 +9,6 @@ import lombok.*;
 @Setter
 @Builder
 public class CategoryDTO {
-    @Schema(hidden = true)
     private Long id;
     private String name;
 }

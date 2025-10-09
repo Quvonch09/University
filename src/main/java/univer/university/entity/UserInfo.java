@@ -21,7 +21,4 @@ public class UserInfo extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Level level;
 
-    @OneToMany
-    private List<Info> info;
-
 }
