@@ -8,8 +8,10 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class CategoryDTO {
+public class SubCategoryDTO {
     @Schema(hidden = true)
     private Long id;
     private String name;
+    @Schema(hidden = true)
+    private Long categoryId;
 }

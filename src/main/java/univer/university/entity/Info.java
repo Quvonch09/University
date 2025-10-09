@@ -1,13 +1,13 @@
 package univer.university.entity;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
+import univer.university.configuration.GenericJsonConverter;
 import univer.university.entity.base.BaseEntity;
 
-@Entity(name = "info")
+@Entity(name = "information")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,10 +15,8 @@ import univer.university.entity.base.BaseEntity;
 @Builder
 public class Info extends BaseEntity {
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String name;
-
+    @Convert(converter = GenericJsonConverter.class)
+    private Object name;
 
     @ManyToOne
     private Category category;
