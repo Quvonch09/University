@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReqSubCategory {
-    private String name;
-    private Long categoryId;
+public class ReqPage {
+    private int page;
+    private int size;
 }

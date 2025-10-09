@@ -6,4 +6,5 @@ import univer.university.entity.Info;
 
 @Repository
 public interface InfoRepository extends JpaRepository<Info, Long> {
+
 }
