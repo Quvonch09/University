@@ -35,7 +35,7 @@ public class User extends BaseEntity implements UserDetails {
 
     private String imgUrl;
 
-    private boolean gender; // 1-male, 0-female
+    private boolean gender; // true-male, false-female
 
     @ManyToOne
     private Department department;

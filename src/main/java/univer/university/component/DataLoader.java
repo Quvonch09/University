@@ -25,7 +25,7 @@ public class DataLoader implements CommandLineRunner {
                     .phone("998900000000")
                     .password(encoder.encode("admin123"))
                     .email("admin@gmail.com")
-                    .role(Role.ADMIN)
+                    .role(Role.ROLE_ADMIN)
                     .fullName("Admin Admin")
                     .enabled(true)
                     .build();
