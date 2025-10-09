@@ -5,8 +5,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.request.AuthRegister;
+import univer.university.entity.Department;
 import univer.university.entity.User;
 import univer.university.entity.enums.Role;
+import univer.university.exception.DataNotFoundException;
+import univer.university.repository.DepartmentRepository;
 import univer.university.repository.UserRepository;
 import univer.university.security.JwtService;
 
@@ -18,6 +21,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final DepartmentRepository departmentRepository;
 
     public ApiResponse<String> login(String phone, String password) {
         Optional<User> optionalUser = userRepository.findByPhone(phone);
@@ -51,11 +55,20 @@ public class AuthService {
             return ApiResponse.error("Teacher already exists");
         }
 
+        Department department = departmentRepository.findById(authRegister.getDepartmentId()).orElseThrow(
+                () -> new DataNotFoundException("Department not found")
+        );
+
+
         User teacher = User.builder()
                 .phone(authRegister.getPhoneNumber())
                 .fullName(authRegister.getFullName())
                 .password(passwordEncoder.encode(authRegister.getPassword()))
                 .role(role)
+                .department(department)
+                .email(authRegister.getEmail())
+                .age(authRegister.getAge())
+                .gender(authRegister.isGender())
                 .build();
         userRepository.save(teacher);
         return ApiResponse.success(null, "Successfully added user");

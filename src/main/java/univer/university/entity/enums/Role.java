@@ -1,5 +1,5 @@
 package univer.university.entity.enums;
 
 public enum Role {
-    ADMIN, TEACHER
+    ROLE_ADMIN, ROLE_TEACHER
 }
