@@ -7,9 +7,13 @@ import univer.university.dto.ApiResponse;
 import univer.university.dto.request.AuthRegister;
 import univer.university.entity.Department;
 import univer.university.entity.User;
+import univer.university.entity.UserInfo;
+import univer.university.entity.enums.AcademicTitle;
+import univer.university.entity.enums.Level;
 import univer.university.entity.enums.Role;
 import univer.university.exception.DataNotFoundException;
 import univer.university.repository.DepartmentRepository;
+import univer.university.repository.UserInfoRepository;
 import univer.university.repository.UserRepository;
 import univer.university.security.JwtService;
 
@@ -22,6 +26,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final DepartmentRepository departmentRepository;
+    private final UserInfoRepository userInfoRepository;
 
     public ApiResponse<String> login(String phone, String password) {
         Optional<User> optionalUser = userRepository.findByPhone(phone);
@@ -48,7 +53,7 @@ public class AuthService {
 
 
 
-    public ApiResponse<String> saveUser(AuthRegister authRegister, Role role){
+    public ApiResponse<String> saveUser(AuthRegister authRegister, Role role, AcademicTitle academicTitle, Level level){
 
         boolean b = userRepository.existsByPhoneAndRole(authRegister.getPhoneNumber(), role);
         if (b){
@@ -70,7 +75,15 @@ public class AuthService {
                 .age(authRegister.getAge())
                 .gender(authRegister.isGender())
                 .build();
-        userRepository.save(teacher);
+        User save = userRepository.save(teacher);
+
+        UserInfo userInfo = UserInfo.builder()
+                .user(save)
+                .academicTitle(academicTitle)
+                .level(level)
+                .build();
+        userInfoRepository.save(userInfo);
+
         return ApiResponse.success(null, "Successfully added user");
     }
 

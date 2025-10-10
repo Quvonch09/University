@@ -11,7 +11,7 @@ import univer.university.service.UserInfoService;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/user-info")
 public class UserInfoController {
