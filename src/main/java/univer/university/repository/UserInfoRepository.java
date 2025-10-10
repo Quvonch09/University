@@ -6,4 +6,5 @@ import univer.university.entity.UserInfo;
 
 @Repository
 public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
+
 }

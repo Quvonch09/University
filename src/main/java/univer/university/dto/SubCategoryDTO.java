@@ -14,4 +14,5 @@ public class SubCategoryDTO {
     private String name;
     @Schema(hidden = true)
     private Long categoryId;
+    private String categoryName;
 }

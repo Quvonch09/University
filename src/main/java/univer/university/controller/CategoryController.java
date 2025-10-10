@@ -23,12 +23,10 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.addCategory(req));
     }
 
-
-    @GetMapping("/get-list")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryDTO>>> getListCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
-
 
     @GetMapping("/{categoryId}")
     public ResponseEntity<ApiResponse<CategoryDTO>> getCategoryById(@PathVariable Long categoryId) {

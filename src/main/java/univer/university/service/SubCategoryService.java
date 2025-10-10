@@ -12,7 +12,6 @@ import univer.university.mapper.SubCategoryMapper;
 import univer.university.repository.CategoryRepository;
 import univer.university.repository.SubCategoryRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -45,5 +44,15 @@ public class SubCategoryService {
         List<SubCategoryDTO> subCategoryDTOS = subCategories.stream().map(subCategoryMapper::subCategoryDTO).toList();
         return ApiResponse.success(subCategoryDTOS,"success");
     }
+
+    public ApiResponse<SubCategoryDTO> getSubCategoryById(Long id) {
+        SubCategory subCategory = subCategoryRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("this subcategory does not exist"));
+        return ApiResponse.success(subCategoryMapper.subCategoryDTO(subCategory),"success");
+
+    }
+
+
+
 
 }
