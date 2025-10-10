@@ -11,7 +11,8 @@ public class UserInfoMapper {
         return UserInfoDTO.builder()
                 .id(userInfo.getId())
                 .userId(userInfo.getUser().getId())
-                .level(userInfo.getLevel())
+                .academicTitle(userInfo.getAcademicTitle().name())
+                .level(userInfo.getLevel().name())
                 .build();
 
     }

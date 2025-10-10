@@ -22,7 +22,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args){
         if (ddl.equals("create")){
             User admin = User.builder()
-                    .phone("998900000000")
+                    .phone("389221100070")
                     .password(encoder.encode("admin123"))
                     .email("admin@gmail.com")
                     .role(Role.ROLE_ADMIN)

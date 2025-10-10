@@ -28,7 +28,7 @@ public class UserInfoService {
         User user = userRepository.findById(req.getUserId()).orElseThrow(() -> new DataNotFoundException("User not found"));
         UserInfo userInfo = UserInfo.builder()
                 .user(user)
-                .level(req.getLevel())
+                .academicTitle(req.getAcademicTitle())
                 .build();
         userInfoRepository.save(userInfo);
         return ApiResponse.success(null,"success");
@@ -44,7 +44,8 @@ public class UserInfoService {
         UserInfo userInfo = userInfoRepository.findById(userInfoId).orElseThrow(() -> new DataNotFoundException("User not found"));
         UserInfoDTO userInfoDTO = UserInfoDTO.builder()
                 .userId(userInfo.getUser().getId())
-                .level(userInfo.getLevel())
+                .academicTitle(userInfo.getAcademicTitle().name())
+                .level(userInfo.getLevel().name())
                 .build();
         return ApiResponse.success(userInfoDTO,"success");
     }

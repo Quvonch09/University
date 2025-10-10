@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
+import univer.university.dto.CollegeDTO;
 import univer.university.dto.request.ReqCollage;
 import univer.university.dto.response.ResCollage;
 import univer.university.service.CollageService;
@@ -42,5 +43,11 @@ public class CollageController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<ResCollage>>> getAllColleges(){
         return ResponseEntity.ok(collageService.getCollage());
+    }
+
+
+    @GetMapping("/{collegeId}")
+    public ResponseEntity<ApiResponse<CollegeDTO>> getOneCollege(@PathVariable Long collegeId){
+        return ResponseEntity.ok(collageService.getOneCollege(collegeId));
     }
 }

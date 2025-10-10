@@ -1,9 +1,11 @@
 package univer.university.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
+import univer.university.dto.DepartmentDTO;
 import univer.university.dto.request.ReqDepartment;
 import univer.university.service.DepartmentService;
 
@@ -35,7 +37,15 @@ public class DepartmentController {
 
 
     @GetMapping("/{collegeId}")
+    @Operation(summary = "College buyicha departmentlarni kurish")
     public ResponseEntity<ApiResponse<List<ReqDepartment>>> getAllDepartments(@PathVariable Long collegeId) {
         return ResponseEntity.ok(departmentService.getDepartmentByCollege(collegeId));
+    }
+
+
+    @GetMapping("/getOne/{departmentId}")
+    @Operation(summary = "Bitta departmentni kurish")
+    public ResponseEntity<ApiResponse<DepartmentDTO>> getDepartment(@PathVariable Long departmentId) {
+        return ResponseEntity.ok(departmentService.getOneDepartment(departmentId));
     }
 }
