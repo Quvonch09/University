@@ -7,6 +7,7 @@ import univer.university.dto.UserInfoDTO;
 import univer.university.dto.request.ReqUserInfo;
 import univer.university.entity.User;
 import univer.university.entity.UserInfo;
+import univer.university.exception.BadRequestException;
 import univer.university.exception.DataNotFoundException;
 import univer.university.mapper.UserInfoMapper;
 import univer.university.repository.UserInfoRepository;
@@ -25,10 +26,12 @@ public class UserInfoService {
     private final UserInfoRepository userInfoRepository;
 
     public ApiResponse<String> addUserInfo(ReqUserInfo req){
+
         User user = userRepository.findById(req.getUserId()).orElseThrow(() -> new DataNotFoundException("User not found"));
         UserInfo userInfo = UserInfo.builder()
                 .user(user)
                 .academicTitle(req.getAcademicTitle())
+                .level(req.getLevel())
                 .build();
         userInfoRepository.save(userInfo);
         return ApiResponse.success(null,"success");
@@ -43,6 +46,7 @@ public class UserInfoService {
     public ApiResponse<UserInfoDTO> getUserInfoById(Long userInfoId){
         UserInfo userInfo = userInfoRepository.findById(userInfoId).orElseThrow(() -> new DataNotFoundException("User not found"));
         UserInfoDTO userInfoDTO = UserInfoDTO.builder()
+                .id(userInfo.getId())
                 .userId(userInfo.getUser().getId())
                 .academicTitle(userInfo.getAcademicTitle().name())
                 .level(userInfo.getLevel().name())

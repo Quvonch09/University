@@ -9,4 +9,5 @@ import univer.university.entity.Category;
 @Setter
 public class ReqCategory {
     private String name;
+    private Long userInfoId;
 }

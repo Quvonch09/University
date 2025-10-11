@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 public class InfoDTO {
     private Long id;
-    private Object name;
+    private Object object;
     private Long categoryId;
 }

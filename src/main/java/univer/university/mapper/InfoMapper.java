@@ -9,7 +9,7 @@ public class InfoMapper {
     public InfoDTO infoDTO(Info info) {
         return InfoDTO.builder()
                 .id(info.getId())
-                .name(info.getName())
+                .object(info.getObject())
                 .categoryId(info.getCategory().getId())
                 .build();
     }

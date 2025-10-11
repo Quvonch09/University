@@ -33,7 +33,7 @@ public class InfoService {
         Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(() -> new DataNotFoundException("Category not found"));
 
         Info info = Info.builder()
-                .name(req.getName())
+                .object(req.getObject())
                 .category(category)
                 .build();
         infoRepository.save(info);
