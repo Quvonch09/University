@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
+import univer.university.entity.Info;
 import univer.university.entity.User;
 import univer.university.exception.DataNotFoundException;
 import univer.university.mapper.UserMapper;
@@ -11,6 +12,9 @@ import univer.university.repository.InfoRepository;
 import univer.university.repository.UserRepository;
 import univer.university.security.CustomUserDetailsService;
 import univer.university.security.JwtService;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +38,16 @@ public class UserService {
         existingUser.setFullName(userDTO.getFullName());
         existingUser.setEmail(userDTO.getEmail());
         existingUser.setImgUrl(userDTO.getImageUrl());
-
         User savedUser = userRepository.save(existingUser);
+
+        List<Info> infos = infoRepository.getInfosByUserId(user.getId());
+
+        for (Info info : infos){
+            if (info.getObject() instanceof Map<?, ?> map) {
+                info.setObject(map);
+            }
+        }
+        infoRepository.saveAll(infos);
 
         if (userDTO.getPhone().equals(user.getPhone())) {
             String token = jwtService.generateToken(

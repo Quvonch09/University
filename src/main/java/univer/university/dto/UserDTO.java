@@ -17,4 +17,8 @@ public class UserDTO {
     private String imageUrl;
     @Schema(hidden = true)
     private String role;
+    @Schema(hidden = true)
+    private Object object;
+    @Schema(hidden = true)
+    private Long categoryId;
 }
