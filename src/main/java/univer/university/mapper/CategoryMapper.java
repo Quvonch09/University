@@ -9,6 +9,7 @@ public class CategoryMapper {
     public CategoryDTO categoryDTO(Category category) {
         return CategoryDTO.builder()
                 .name(category.getName())
+                .userInfoId(category.getUserInfo().getId())
                 .build();
     }
 }

@@ -16,7 +16,7 @@ import univer.university.entity.base.BaseEntity;
 public class Info extends BaseEntity {
 
     @Convert(converter = GenericJsonConverter.class)
-    private Object name;
+    private Object object;
 
     @ManyToOne
     private Category category;
