@@ -49,4 +49,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<List<AgeGenderStatsProjection>>> getAgeDashboard(){
         return ResponseEntity.ok(userService.getAgeGenderDashboard());
     }
+
+
+
 }
