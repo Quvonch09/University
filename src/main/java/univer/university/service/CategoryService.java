@@ -9,7 +9,6 @@ import univer.university.entity.Category;
 import univer.university.entity.UserInfo;
 import univer.university.exception.DataNotFoundException;
 import univer.university.repository.CategoryRepository;
-import univer.university.repository.SubCategoryRepository;
 import univer.university.repository.UserInfoRepository;
 
 import java.util.ArrayList;
@@ -30,9 +29,16 @@ public class CategoryService {
         }
         UserInfo userInfo = userInfoRepository.findById(req.getUserInfoId()).orElseThrow(() -> new DataNotFoundException("userInfo not found"));
 
+        Category parentCategory = null;
+        if (req.getParentCategoryId() != null) {
+            parentCategory = categoryRepository.findById(req.getParentCategoryId())
+                    .orElseThrow(() -> new DataNotFoundException("Parent category not found"));
+        }
+
         Category newCategory = Category.builder()
                 .name(req.getName())
                 .userInfo(userInfo)
+                .parent(parentCategory)
                 .build();
         categoryRepository.save(newCategory);
 
@@ -43,14 +49,15 @@ public class CategoryService {
     public ApiResponse<List<CategoryDTO>> getAllCategories() {
         List<Category> all = categoryRepository.findAll();
         if (all.isEmpty()) {
-            return ApiResponse.error(null);
+            return ApiResponse.error("category not found");
         }
         List<CategoryDTO> categoryDTOList = new ArrayList<>();
         for (Category category : all) {
             CategoryDTO categoryDTO = new CategoryDTO();
             categoryDTO.setId(category.getId());
             categoryDTO.setName(category.getName());
-            categoryDTO.setUserInfoId(category.getUserInfo().getId());
+            categoryDTO.setUserInfoId(category.getUserInfo() != null ? category.getUserInfo().getId() : null);
+            categoryDTO.setParentCategoryId(category.getParent() != null ? category.getParent().getId() : null);
             categoryDTOList.add(categoryDTO);
         }
         return ApiResponse.success(categoryDTOList,"success");
@@ -64,6 +71,7 @@ public class CategoryService {
                 .id(category.getId())
                 .name(category.getName())
                 .userInfoId(category.getUserInfo().getId())
+                .parentCategoryId(category.getParent().getId())
                 .build();
         return ApiResponse.success(categoryDTO,"success");
 
