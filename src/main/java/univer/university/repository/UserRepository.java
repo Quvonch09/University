@@ -3,9 +3,12 @@ package univer.university.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import univer.university.dto.response.AgeGenderStatsProjection;
+import univer.university.dto.response.GenderStatsProjection;
 import univer.university.entity.User;
 import univer.university.entity.enums.Role;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -68,4 +71,49 @@ public interface UserRepository extends JpaRepository<User, Long> {
         where u.department_id = ?1 and uf.level IS NULL and uf.academic_title IS NULL
     """, nativeQuery = true)
     long countByDepartmentNone(Long departmentId);
+
+
+    long countByRole(Role role);
+    long countByGender(boolean gender);
+
+    @Query(value = """
+    select count(u.*) from users u join user_info uf on u.id = uf.user_id 
+                      where uf.academic_title IS NOT NULL and uf.level IS NOT NULL
+    """, nativeQuery = true)
+    long countByAcademic();
+
+    @Query(value = """
+    SELECT
+        COUNT(*) AS total,
+        SUM(CASE WHEN gender = true THEN 1 ELSE 0 END) AS maleCount,
+        SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) AS femaleCount,
+        ROUND(SUM(CASE WHEN gender = true THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS malePercentage,
+        ROUND(SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS femalePercentage
+    FROM users
+""", nativeQuery = true)
+    GenderStatsProjection getGenderStatistics();
+
+
+    @Query(value = """
+        SELECT
+            CASE
+                WHEN age < 30 THEN '30 ostida'
+                WHEN age BETWEEN 30 AND 34 THEN '30-35 yil'
+                WHEN age BETWEEN 35 AND 39 THEN '35-40 yil'
+                WHEN age BETWEEN 40 AND 44 THEN '40-45 yil'
+                WHEN age BETWEEN 45 AND 49 THEN '45-50 yil'
+                WHEN age BETWEEN 50 AND 54 THEN '50-55 yil'
+                WHEN age BETWEEN 55 AND 59 THEN '55-60 yil'
+                ELSE '60+ yil'
+            END AS age_group,
+            SUM(CASE WHEN gender = true THEN 1 ELSE 0 END) AS male_count,
+            SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) AS female_count,
+            COUNT(*) AS total,
+            ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 1) AS percentage
+        FROM users
+        GROUP BY age_group
+        ORDER BY MIN(age)
+    """, nativeQuery = true)
+    List<AgeGenderStatsProjection> getAgeGenderStatistics();
+
 }
