@@ -4,14 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
-import univer.university.dto.request.ReqUserDTO;
+import univer.university.dto.response.AgeGenderStatsProjection;
+import univer.university.dto.response.GenderStatsProjection;
+import univer.university.dto.response.ResDashboard;
 import univer.university.entity.Info;
 import univer.university.entity.User;
+import univer.university.entity.enums.Role;
 import univer.university.exception.DataNotFoundException;
 import univer.university.mapper.UserMapper;
 import univer.university.repository.InfoRepository;
 import univer.university.repository.UserRepository;
-import univer.university.security.CustomUserDetailsService;
 import univer.university.security.JwtService;
 
 import java.util.List;
@@ -61,5 +63,35 @@ public class UserService {
         return ApiResponse.success(null, "Success");
     }
 
+
+
+    public ApiResponse<ResDashboard> getDashboard(){
+        long teacherCount = userRepository.countByRole(Role.ROLE_TEACHER);
+        long maleCount = userRepository.countByGender(true);
+        long feMaleCount = userRepository.countByGender(false);
+        long countByAcademic = userRepository.countByAcademic();
+
+        ResDashboard resDashboard = ResDashboard.builder()
+                .countAllUsers(teacherCount)
+                .countMale(maleCount)
+                .countFemale(feMaleCount)
+                .countAcademic(countByAcademic)
+                .build();
+
+        return ApiResponse.success(resDashboard, "Success");
+    }
+
+
+    public ApiResponse<GenderStatsProjection> getGenderDashboard(){
+        GenderStatsProjection genderStatistics = userRepository.getGenderStatistics();
+        return ApiResponse.success(genderStatistics, "Success");
+    }
+
+
+
+    public ApiResponse<List<AgeGenderStatsProjection>> getAgeGenderDashboard(){
+        List<AgeGenderStatsProjection> ageGenderStatistics = userRepository.getAgeGenderStatistics();
+        return ApiResponse.success(ageGenderStatistics, "Success");
+    }
 
 }
