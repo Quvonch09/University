@@ -1,9 +1,10 @@
 package univer.university.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import univer.university.entity.base.BaseEntity;
+
+import java.util.List;
 
 @Entity(name = "category")
 @AllArgsConstructor
@@ -13,7 +14,9 @@ import univer.university.entity.base.BaseEntity;
 @Builder
 public class Category extends BaseEntity {
     private String name;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Category parent;
     @ManyToOne
     private UserInfo userInfo;
 }

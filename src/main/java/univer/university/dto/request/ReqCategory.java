@@ -10,4 +10,5 @@ import univer.university.entity.Category;
 public class ReqCategory {
     private String name;
     private Long userInfoId;
+    private Long parentCategoryId;
 }
