@@ -25,17 +25,18 @@ public class UserInfoService {
 
     private final UserInfoRepository userInfoRepository;
 
-    public ApiResponse<String> addUserInfo(ReqUserInfo req){
-
-        User user = userRepository.findById(req.getUserId()).orElseThrow(() -> new DataNotFoundException("User not found"));
-        UserInfo userInfo = UserInfo.builder()
-                .user(user)
-                .academicTitle(req.getAcademicTitle())
-                .level(req.getLevel())
-                .build();
-        userInfoRepository.save(userInfo);
-        return ApiResponse.success(null,"success");
-    }
+//    public ApiResponse<String> addUserInfo(ReqUserInfo req){
+//
+//        User user = userRepository.findById(req.getUserId()).orElseThrow(() -> new DataNotFoundException("User not found"));
+//
+//        UserInfo userInfo = UserInfo.builder()
+//                .user(user)
+//                .academicTitle(req.getAcademicTitle())
+//                .level(req.getLevel())
+//                .build();
+//        userInfoRepository.save(userInfo);
+//        return ApiResponse.success(null,"success");
+//    }
 
     public ApiResponse<List<UserInfoDTO>> getAllList(){
         List<UserInfo> all = userInfoRepository.findAll();
