@@ -13,18 +13,4 @@ public class UniversityApplication {
         SpringApplication.run(UniversityApplication.class, args);
     }
 
-
-    @Bean
-    public CommandLineRunner checkBeans(ApplicationContext context) {
-        return args -> {
-            System.out.println("=== Beans list ===");
-            for (String name : context.getBeanDefinitionNames()) {
-                if (name.toLowerCase().contains("user")) {
-                    System.out.println("➡️ " + name);
-                }
-            }
-            System.out.println("==================");
-        };
-    }
-
 }

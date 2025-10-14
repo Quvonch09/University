@@ -105,7 +105,7 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
                 "http://127.0.0.1:5500",
-                "http://167.86.121.42/",
+                "http://156.67.31.142/",
                 "https://nazorat.sferaacademy.uz/"
         ));
 
