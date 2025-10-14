@@ -13,6 +13,6 @@ public class ReqUserDTO {
     private String phone;
     private String email;
     private String imageUrl;
-//    private List<Object> infos;
-//    private Long categoryId;
+    private List<Object> infos;
+    private Long categoryId;
 }

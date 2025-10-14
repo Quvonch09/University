@@ -17,10 +17,10 @@ import java.util.List;
 public class UserInfoController {
     private final UserInfoService userInfoService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<String>> addUserInfo(@RequestBody ReqUserInfo req){
-        return ResponseEntity.ok(userInfoService.addUserInfo(req));
-    }
+//    @PostMapping
+//    public ResponseEntity<ApiResponse<String>> addUserInfo(@RequestBody ReqUserInfo req){
+//        return ResponseEntity.ok(userInfoService.addUserInfo(req));
+//    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserInfoDTO>>> getAllList(){
