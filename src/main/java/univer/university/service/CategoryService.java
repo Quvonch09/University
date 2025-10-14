@@ -30,7 +30,7 @@ public class CategoryService {
         UserInfo userInfo = userInfoRepository.findById(req.getUserInfoId()).orElseThrow(() -> new DataNotFoundException("userInfo not found"));
 
         Category parentCategory = null;
-        if (req.getParentCategoryId() != null) {
+        if (req.getParentCategoryId() != null && req.getParentCategoryId() != 0) {
             parentCategory = categoryRepository.findById(req.getParentCategoryId())
                     .orElseThrow(() -> new DataNotFoundException("Parent category not found"));
         }

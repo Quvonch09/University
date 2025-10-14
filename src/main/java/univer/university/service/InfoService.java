@@ -10,6 +10,7 @@ import univer.university.dto.ApiResponse;
 import univer.university.dto.InfoDTO;
 import univer.university.dto.request.ReqInfo;
 import univer.university.dto.request.ReqPage;
+import univer.university.dto.request.ReqUpdateInfo;
 import univer.university.dto.response.ResPageable;
 import univer.university.entity.Category;
 import univer.university.entity.Info;
@@ -59,6 +60,24 @@ public class InfoService {
                 .build();
         return ApiResponse.success(resPageable,"success");
 
+    }
+
+    public ApiResponse<String> updateInfo(ReqUpdateInfo req){
+
+        Info info = infoRepository.findById(req.getId()).orElseThrow(() -> new DataNotFoundException("Info not found"));
+        Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(() -> new DataNotFoundException("Category not found"));
+
+        info.setObject(req.getObjectName());
+        info.setCategory(category);
+        infoRepository.save(info);
+        return ApiResponse.success(null,"success");
+
+    }
+
+    public ApiResponse<InfoDTO> getInfoById(Long id){
+        Info info = infoRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Info not found"));
+        InfoDTO infoDTO = infoMapper.infoDTO(info);
+        return ApiResponse.success(infoDTO,"success");
     }
 
 }

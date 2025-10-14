@@ -6,6 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
+import univer.university.dto.request.ReqUserDTO;
 import univer.university.dto.response.AgeGenderStatsProjection;
 import univer.university.dto.response.GenderStatsProjection;
 import univer.university.dto.response.ResDashboard;
