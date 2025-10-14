@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import univer.university.entity.Info;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -20,5 +22,7 @@ public interface InfoRepository extends JpaRepository<Info, Long> {
         WHERE u.id = :userId
     """, nativeQuery = true)
     List<Info> getInfosByUserId(@Param("userId") Long userId);
+
+    long countInfoByCreatedAt(Instant createdAt);
 
 }

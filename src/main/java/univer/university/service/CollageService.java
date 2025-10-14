@@ -7,18 +7,22 @@ import univer.university.dto.ApiResponse;
 import univer.university.dto.CollegeDTO;
 import univer.university.dto.request.ReqCollage;
 import univer.university.dto.response.ResCollage;
+import univer.university.dto.response.ResCollegeDashboard;
 import univer.university.dto.response.ResDepartment;
 import univer.university.entity.College;
 import univer.university.entity.Department;
 import univer.university.entity.enums.AcademicTitle;
 import univer.university.entity.enums.Level;
+import univer.university.entity.enums.Role;
 import univer.university.exception.DataNotFoundException;
 import univer.university.mapper.CollageMapper;
 import univer.university.mapper.DepartmentMapper;
 import univer.university.repository.CollageRepository;
 import univer.university.repository.DepartmentRepository;
+import univer.university.repository.InfoRepository;
 import univer.university.repository.UserRepository;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +34,7 @@ public class CollageService {
     private final CollageMapper collageMapper;
     private final UserRepository userRepository;
     private final DepartmentMapper departmentMapper;
+    private final InfoRepository infoRepository;
 
     public ApiResponse<String> saveCollage(ReqCollage reqCollage){
         boolean b = collageRepository.existsByName(reqCollage.getName());
@@ -123,5 +128,21 @@ public class CollageService {
                 .build();
 
         return ApiResponse.success(collegeDTO, "Success");
+    }
+
+
+    public ApiResponse<ResCollegeDashboard> getCollegeDashboard(){
+        long countTeacher = userRepository.countByRoleAndEnabledTrue(Role.ROLE_TEACHER);
+        long departmentCount = departmentRepository.count();
+        long countInfo = infoRepository.countInfoByCreatedAt(Instant.now());
+        long count = infoRepository.count();
+
+        ResCollegeDashboard resCollegeDashboard = ResCollegeDashboard.builder()
+                .countTeachers(countTeacher)
+                .countInfo(count)
+                .countInfoByMonth(countInfo)
+                .countDepartments(departmentCount)
+                .build();
+        return ApiResponse.success(resCollegeDashboard, "Success");
     }
 }
