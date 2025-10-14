@@ -8,6 +8,7 @@ import univer.university.dto.ApiResponse;
 import univer.university.dto.CollegeDTO;
 import univer.university.dto.request.ReqCollage;
 import univer.university.dto.response.ResCollage;
+import univer.university.dto.response.ResCollegeDashboard;
 import univer.university.service.CollageService;
 
 import java.util.List;
@@ -49,5 +50,10 @@ public class CollageController {
     @GetMapping("/{collegeId}")
     public ResponseEntity<ApiResponse<CollegeDTO>> getOneCollege(@PathVariable Long collegeId){
         return ResponseEntity.ok(collageService.getOneCollege(collegeId));
+    }
+
+    @GetMapping("/college-dashboard")
+    public ResponseEntity<ApiResponse<ResCollegeDashboard>> getDashboard(){
+        return ResponseEntity.ok(collageService.getCollegeDashboard());
     }
 }
