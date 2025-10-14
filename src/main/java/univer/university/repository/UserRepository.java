@@ -116,4 +116,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     """, nativeQuery = true)
     List<AgeGenderStatsProjection> getAgeGenderStatistics();
 
+
+    long countByRoleAndEnabledTrue(Role role);
+
 }

@@ -33,6 +33,10 @@ public class AuthService {
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
+            if (!user.isEnabled()){
+                return ApiResponse.error("Bu user faol emas. Adminlarga murojaat qiling");
+            }
+
             if (!passwordEncoder.matches(password, user.getPassword())) {
                 return ApiResponse.error("Invalid password");
             }
@@ -71,6 +75,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(authRegister.getPassword()))
                 .role(role)
                 .department(department)
+                .enabled(true)
                 .email(authRegister.getEmail())
                 .age(authRegister.getAge())
                 .gender(authRegister.isGender())
