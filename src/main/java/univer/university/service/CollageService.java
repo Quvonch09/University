@@ -73,20 +73,21 @@ public class CollageService {
         College college = collageRepository.findById(collageId).orElseThrow(
                 () -> new DataNotFoundException("This collage does not exist")
         );
-        collageRepository.delete(college);
+        college.setActive(false);
+        collageRepository.save(college);
         return ApiResponse.success(null, "Successfully deleted collage");
     }
 
 
 //  getAll
     public ApiResponse<List<ResCollage>> getCollage(){
-        List<College> collegeList = collageRepository.findAll();
+        List<College> collegeList = collageRepository.findAllByActiveTrue();
 
         List<ResCollage> dtoList = new ArrayList<>();
 
         for (College college : collegeList) {
 
-            List<Department> allByCollegeId = departmentRepository.findAllByCollegeId(college.getId());
+            List<Department> allByCollegeId = departmentRepository.findAllByCollegeIdAndActiveTrue(college.getId());
 
             List<String> departmentNames = allByCollegeId.stream().map(Department::getName).toList();
 
@@ -101,7 +102,7 @@ public class CollageService {
 
 
     public ApiResponse<CollegeDTO> getOneCollege(Long collegeId){
-        College college = collageRepository.findById(collegeId).orElseThrow(
+        College college = collageRepository.findByIdAndActiveTrue(collegeId).orElseThrow(
                 () -> new DataNotFoundException("College not found")
         );
 
@@ -112,7 +113,7 @@ public class CollageService {
         long countDotsent = userRepository.countAcademicByCollege(college.getId(), AcademicTitle.DOTSENT.name());
         long countNull = userRepository.countByCollegeNone(college.getId());
 
-        List<ResDepartment> departmentList = departmentRepository.findAllByCollegeId(college.getId())
+        List<ResDepartment> departmentList = departmentRepository.findAllByCollegeIdAndActiveTrue(college.getId())
                 .stream().map(departmentMapper::toResDTO).toList();
 
         CollegeDTO collegeDTO = CollegeDTO.builder()

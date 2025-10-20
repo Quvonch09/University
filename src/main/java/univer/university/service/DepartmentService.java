@@ -64,24 +64,25 @@ public class DepartmentService {
                 () -> new DataNotFoundException("Department not found")
         );
 
-        departmentRepository.delete(department);
+        department.setActive(false);
+        departmentRepository.save(department);
         return ApiResponse.success(null, "department deleted successfully");
     }
 
 
     public ApiResponse<List<ReqDepartment>> getDepartmentByCollege(Long collegeId){
-        College college = collageRepository.findById(collegeId).orElseThrow(
+        College college = collageRepository.findByIdAndActiveTrue(collegeId).orElseThrow(
                 () -> new DataNotFoundException("College not found")
         );
 
-        List<Department> departments = departmentRepository.findAllByCollegeId(college.getId());
+        List<Department> departments = departmentRepository.findAllByCollegeIdAndActiveTrue(college.getId());
         List<ReqDepartment> list = departments.stream().map(departmentMapper::toDTO).toList();
         return ApiResponse.success(list, "department list successfully");
     }
 
 
     public ApiResponse<DepartmentDTO> getOneDepartment(Long id){
-        Department department = departmentRepository.findById(id).orElseThrow(
+        Department department = departmentRepository.findByIdAndActiveTrue(id).orElseThrow(
                 () -> new DataNotFoundException("Department not found")
         );
 
