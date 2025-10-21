@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.DepartmentDTO;
 import univer.university.dto.request.ReqDepartment;
+import univer.university.dto.response.ResPageable;
 import univer.university.service.DepartmentService;
 
 import java.util.List;
@@ -36,10 +37,20 @@ public class DepartmentController {
     }
 
 
-    @GetMapping("/{collegeId}")
-    @Operation(summary = "College buyicha departmentlarni kurish")
-    public ResponseEntity<ApiResponse<List<ReqDepartment>>> getAllDepartments(@PathVariable Long collegeId) {
-        return ResponseEntity.ok(departmentService.getDepartmentByCollege(collegeId));
+//    @GetMapping("/{collegeId}")
+//    @Operation(summary = "College buyicha departmentlarni kurish")
+//    public ResponseEntity<ApiResponse<List<ReqDepartment>>> getAllDepartments(@PathVariable Long collegeId) {
+//        return ResponseEntity.ok(departmentService.getDepartmentByCollege(collegeId));
+//    }
+
+
+    @GetMapping("/page")
+    @Operation(summary = "Departmentlarni filter qilib page chiqarish")
+    public ResponseEntity<ApiResponse<ResPageable>> getPage(@RequestParam(required = false) String name,
+                                                            @RequestParam(required = false) Long collegeId,
+                                                            @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(departmentService.searchDepartment(name, collegeId, page, size));
     }
 
 

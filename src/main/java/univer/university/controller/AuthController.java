@@ -33,12 +33,11 @@ public class AuthController {
     @Operation(summary = "Teacher saqlash uchun",
             description = "gender = true-erkak, gender = false-ayol")
     public ResponseEntity<ApiResponse<String>> userLogin(
-            @RequestParam Role role,
             @RequestParam(required = false) AcademicTitle academicTitle,
             @RequestParam(required = false) Level level,
             @RequestBody AuthRegister register
     ){
-        return ResponseEntity.ok(authService.saveUser(register, role, academicTitle, level));
+        return ResponseEntity.ok(authService.saveUser(register, academicTitle, level));
     }
 
 

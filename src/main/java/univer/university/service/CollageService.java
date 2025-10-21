@@ -1,6 +1,8 @@
 package univer.university.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
@@ -9,6 +11,7 @@ import univer.university.dto.request.ReqCollage;
 import univer.university.dto.response.ResCollage;
 import univer.university.dto.response.ResCollegeDashboard;
 import univer.university.dto.response.ResDepartment;
+import univer.university.dto.response.ResPageable;
 import univer.university.entity.College;
 import univer.university.entity.Department;
 import univer.university.entity.enums.AcademicTitle;
@@ -80,8 +83,12 @@ public class CollageService {
 
 
 //  getAll
-    public ApiResponse<List<ResCollage>> getCollage(){
-        List<College> collegeList = collageRepository.findAllByActiveTrue();
+    public ApiResponse<List<ResCollage>> getCollage(String name){
+        List<College> collegeList = collageRepository.searchAllByNameLikeAndActiveTrue(name);
+
+        if (collegeList.isEmpty()){
+            return ApiResponse.error("College not found");
+        }
 
         List<ResCollage> dtoList = new ArrayList<>();
 
@@ -119,6 +126,7 @@ public class CollageService {
         CollegeDTO collegeDTO = CollegeDTO.builder()
                 .id(college.getId())
                 .name(college.getName())
+                .imgUrl(college.getImgUrl())
                 .countUsers(countAllUsers)
                 .countPHD(countPHD)
                 .countDSC(countDSC)
@@ -145,5 +153,37 @@ public class CollageService {
                 .countDepartments(departmentCount)
                 .build();
         return ApiResponse.success(resCollegeDashboard, "Success");
+    }
+
+
+    public ApiResponse<ResPageable> getCollegePageable(String name, int page, int size){
+        Page<College> byCollegeByPage = collageRepository.findByCollegeByPage(name, PageRequest.of(page, size));
+
+        if (byCollegeByPage.getTotalElements() == 0) {
+            return ApiResponse.error("College not found");
+        }
+
+        List<ResCollage> dtoList = new ArrayList<>();
+
+        for (College college : byCollegeByPage.getContent()) {
+
+            List<Department> allByCollegeId = departmentRepository.findAllByCollegeIdAndActiveTrue(college.getId());
+
+            List<String> departmentNames = allByCollegeId.stream().map(Department::getName).toList();
+
+            ResCollage dto = collageMapper.toDTO(college, departmentNames);
+
+            dtoList.add(dto);
+        }
+
+        ResPageable resPageable = ResPageable.builder()
+                .page(page)
+                .size(size)
+                .totalElements(byCollegeByPage.getTotalElements())
+                .totalPage(byCollegeByPage.getTotalPages())
+                .body(dtoList)
+                .build();
+
+        return ApiResponse.success(resPageable, "Success");
     }
 }

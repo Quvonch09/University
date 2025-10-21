@@ -1,5 +1,6 @@
 package univer.university.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,6 +10,7 @@ import univer.university.dto.CollegeDTO;
 import univer.university.dto.request.ReqCollage;
 import univer.university.dto.response.ResCollage;
 import univer.university.dto.response.ResCollegeDashboard;
+import univer.university.dto.response.ResPageable;
 import univer.university.service.CollageService;
 
 import java.util.List;
@@ -42,8 +44,8 @@ public class CollageController {
 
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ResCollage>>> getAllColleges(){
-        return ResponseEntity.ok(collageService.getCollage());
+    public ResponseEntity<ApiResponse<List<ResCollage>>> getAllColleges(@RequestParam(required = false) String name){
+        return ResponseEntity.ok(collageService.getCollage(name));
     }
 
 
@@ -55,5 +57,14 @@ public class CollageController {
     @GetMapping("/college-dashboard")
     public ResponseEntity<ApiResponse<ResCollegeDashboard>> getDashboard(){
         return ResponseEntity.ok(collageService.getCollegeDashboard());
+    }
+
+
+    @GetMapping("/page")
+    @Operation(summary = "College pagenation bilan ishlaydigan api")
+    public ResponseEntity<ApiResponse<ResPageable>> getPage(@RequestParam(required = false) String name,
+                                                            @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(collageService.getCollegePageable(name, page, size));
     }
 }
