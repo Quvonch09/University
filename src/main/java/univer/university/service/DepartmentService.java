@@ -1,10 +1,13 @@
 package univer.university.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.DepartmentDTO;
 import univer.university.dto.request.ReqDepartment;
+import univer.university.dto.response.ResPageable;
 import univer.university.entity.College;
 import univer.university.entity.Department;
 import univer.university.entity.enums.AcademicTitle;
@@ -105,5 +108,27 @@ public class DepartmentService {
                 .countNull(countNull)
                 .build();
         return ApiResponse.success(departmentDTO, "department get successfully");
+    }
+
+
+
+
+
+    public ApiResponse<ResPageable> searchDepartment(String name, Long collegeId, int page, int size){
+        Page<Department> departments = departmentRepository.searchDepartment(name, collegeId, PageRequest.of(page, size));
+        if(departments.getTotalElements() == 0){
+            return ApiResponse.error("Department not found");
+        }
+
+        List<ReqDepartment> departmentList = departments.getContent().stream().map(departmentMapper::toDTO).toList();
+
+        ResPageable resPageable = ResPageable.builder()
+                .page(page)
+                .size(size)
+                .totalPage(departments.getTotalPages())
+                .totalElements(departments.getTotalElements())
+                .body(departmentList)
+                .build();
+        return ApiResponse.success(resPageable, "department list successfully");
     }
 }

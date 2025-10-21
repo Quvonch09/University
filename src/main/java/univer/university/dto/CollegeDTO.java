@@ -14,6 +14,7 @@ import java.util.List;
 public class CollegeDTO {
     private Long id;
     private String name;
+    private String imgUrl;
     private long countUsers;
     private long countProfessor;
     private long countDotsent;

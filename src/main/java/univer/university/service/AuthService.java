@@ -57,9 +57,9 @@ public class AuthService {
 
 
 
-    public ApiResponse<String> saveUser(AuthRegister authRegister, Role role, AcademicTitle academicTitle, Level level){
+    public ApiResponse<String> saveUser(AuthRegister authRegister, AcademicTitle academicTitle, Level level){
 
-        boolean b = userRepository.existsByPhoneAndRole(authRegister.getPhoneNumber(), role);
+        boolean b = userRepository.existsByPhoneAndRole(authRegister.getPhoneNumber(), Role.ROLE_TEACHER);
         if (b){
             return ApiResponse.error("Teacher already exists");
         }
@@ -73,7 +73,7 @@ public class AuthService {
                 .phone(authRegister.getPhoneNumber())
                 .fullName(authRegister.getFullName())
                 .password(passwordEncoder.encode(authRegister.getPassword()))
-                .role(role)
+                .role(Role.ROLE_TEACHER)
                 .department(department)
                 .enabled(true)
                 .email(authRegister.getEmail())
