@@ -14,8 +14,11 @@ import univer.university.entity.enums.Level;
 @Builder
 public class UserInfo extends BaseEntity {
 
-    @OneToOne
+    @ManyToOne
     private User user;
+
+    @ManyToOne
+    private Category category;
 
     @Enumerated(EnumType.STRING)
     private AcademicTitle academicTitle;
