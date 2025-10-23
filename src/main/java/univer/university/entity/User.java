@@ -29,16 +29,22 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String email;
 
+    @Column(length = 2000)
     private String biography;
 
     private int age;
 
     private String imgUrl;
 
+    private String input;
+
     private boolean gender; // true-male, false-female
 
     @ManyToOne
     private Department department;
+
+    @ManyToOne
+    private Lavozm lavozm;
 
     @Column(nullable = false)
     private String password;

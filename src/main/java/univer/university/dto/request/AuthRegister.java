@@ -14,6 +14,14 @@ public class AuthRegister {
 
     private String phoneNumber;
 
+    private String biography;
+
+    private String imgUrl;
+
+    private String input;
+
+    private Long lavozmId;
+
     @Email
     private String email;
 

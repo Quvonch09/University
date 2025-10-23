@@ -14,9 +14,4 @@ import java.util.List;
 @Builder
 public class Category extends BaseEntity {
     private String name;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Category parent;
-    @ManyToOne
-    private UserInfo userInfo;
 }

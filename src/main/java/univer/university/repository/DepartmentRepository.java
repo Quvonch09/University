@@ -19,7 +19,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     @Query(value = """
         select d.* from department d where
-        (:name IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%',:name,'%'))) and
+        (:name IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%',:name,'%'))) and d.active = true and
         (:collegeId IS NULL OR d.college_id = :collegeId) order by created_at desc
     """, nativeQuery = true)
     Page<Department> searchDepartment(@Param("name") String name,

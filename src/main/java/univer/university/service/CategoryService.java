@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryService {
 
-    private final UserInfoRepository userInfoRepository;
     private final CategoryRepository categoryRepository;
 
     public ApiResponse<String> addCategory(ReqCategory req) {
@@ -27,18 +26,10 @@ public class CategoryService {
         if (b) {
             return ApiResponse.error("this category already exists");
         }
-        UserInfo userInfo = userInfoRepository.findById(req.getUserInfoId()).orElseThrow(() -> new DataNotFoundException("userInfo not found"));
 
-        Category parentCategory = null;
-        if (req.getParentCategoryId() != null && req.getParentCategoryId() != 0) {
-            parentCategory = categoryRepository.findById(req.getParentCategoryId())
-                    .orElseThrow(() -> new DataNotFoundException("Parent category not found"));
-        }
 
         Category newCategory = Category.builder()
                 .name(req.getName())
-                .userInfo(userInfo)
-                .parent(parentCategory)
                 .build();
         categoryRepository.save(newCategory);
 
@@ -56,8 +47,6 @@ public class CategoryService {
             CategoryDTO categoryDTO = new CategoryDTO();
             categoryDTO.setId(category.getId());
             categoryDTO.setName(category.getName());
-            categoryDTO.setUserInfoId(category.getUserInfo() != null ? category.getUserInfo().getId() : null);
-            categoryDTO.setParentCategoryId(category.getParent() != null ? category.getParent().getId() : null);
             categoryDTOList.add(categoryDTO);
         }
         return ApiResponse.success(categoryDTOList,"success");
@@ -70,8 +59,6 @@ public class CategoryService {
         CategoryDTO categoryDTO = CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .userInfoId(category.getUserInfo().getId())
-                .parentCategoryId(category.getParent().getId())
                 .build();
         return ApiResponse.success(categoryDTO,"success");
 

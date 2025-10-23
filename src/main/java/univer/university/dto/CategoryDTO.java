@@ -11,6 +11,4 @@ import lombok.*;
 public class CategoryDTO {
     private Long id;
     private String name;
-    private Long userInfoId;
-    private Long parentCategoryId;
 }
