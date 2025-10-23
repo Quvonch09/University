@@ -35,6 +35,11 @@ public class UserService {
         return ApiResponse.success(userMapper.userDTO(user), "Success");
     }
 
+    public ApiResponse<UserDTO> getById(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
+        return ApiResponse.success(userMapper.userDTO(user), "Success");
+    }
+
     public ApiResponse<String> update(User user, UserDTO userDTO) {
 
         User existingUser = userRepository.findById(user.getId())
