@@ -11,6 +11,7 @@ import univer.university.entity.enums.AcademicTitle;
 public class UserInfoDTO {
     private Long id;
     private Long userId;
+    private Long categoryId;
     private String academicTitle;
     private String level;
 }

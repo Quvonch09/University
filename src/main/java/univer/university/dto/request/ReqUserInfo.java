@@ -9,6 +9,7 @@ import univer.university.entity.enums.Level;
 @Setter
 public class ReqUserInfo {
     private Long userId;
+    private Long categoryId;
     private AcademicTitle academicTitle;
     private Level level;
 }
