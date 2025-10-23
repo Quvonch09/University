@@ -26,9 +26,9 @@ public interface CollageRepository extends JpaRepository<College, Long> {
     Optional<College> findByIdAndActiveTrue(Long id);
 
     @Query(value = """
-        select * from college where
-        (:name IS NULL OR LOWER(name) LIKE LOWER(CONCAT('%',:name,'%'))) and
-        active = true order by created_at desc
+        select c.* from college c where
+        (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%'))) and
+        c.active = true order by c.created_at desc
     """, nativeQuery = true)
     Page<College> findByCollegeByPage(@Param("name") String name, Pageable pageable);
 }

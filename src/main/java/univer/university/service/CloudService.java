@@ -30,7 +30,11 @@ public class CloudService {
     @Value("${supabase.bucket_name}")
     private String bucketName;
 
+    @Value("${cloud.api.key}")
+    private String apiKey;
+
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     public String uploadFile(MultipartFile file, String fileName) throws IOException {
         String uniqueName = LocalDateTime.now() + "_" + fileName;
@@ -51,5 +55,29 @@ public class CloudService {
         } else {
             throw new BadRequestException("Fayl yuklashda xatolik: " + response.getStatusCode());
         }
+    }
+
+
+
+
+    public String uploadImage(MultipartFile file) throws IOException {
+        if (!Objects.requireNonNull(file.getContentType()).startsWith("image/"))
+            throw new IllegalArgumentException("Faqat rasm yuklash mumkin");
+        if (file.getSize() > 5 * 1024 * 1024)
+            throw new IllegalArgumentException("Fayl hajmi 5MB dan katta bo'lishi mumkin emas");
+
+        String url = "https://api.imgbb.com/1/upload?key=" + apiKey;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("image", file.getResource());
+
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+
+        JsonNode jsonNode = objectMapper.readTree(response.getBody());
+        return jsonNode.path("data").path("url").asText();
     }
 }

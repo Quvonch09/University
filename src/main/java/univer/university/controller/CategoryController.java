@@ -32,4 +32,16 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<CategoryDTO>> getCategoryById(@PathVariable Long categoryId) {
         return ResponseEntity.ok(categoryService.getCategoryById(categoryId));
     }
+
+
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<ApiResponse<String>> deleteCategory(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(categoryService.deleteCategory(categoryId));
+    }
+
+
+    @PutMapping
+    public ResponseEntity<ApiResponse<String>> updateCategory(@RequestBody CategoryDTO categoryDTO) {
+        return ResponseEntity.ok(categoryService.updateCategory(categoryDTO));
+    }
 }

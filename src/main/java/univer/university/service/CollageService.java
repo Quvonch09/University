@@ -76,6 +76,12 @@ public class CollageService {
         College college = collageRepository.findById(collageId).orElseThrow(
                 () -> new DataNotFoundException("This collage does not exist")
         );
+
+        for (Department department : departmentRepository.findAllByCollegeIdAndActiveTrue(college.getId())) {
+            department.setActive(false);
+            departmentRepository.save(department);
+        }
+
         college.setActive(false);
         collageRepository.save(college);
         return ApiResponse.success(null, "Successfully deleted collage");

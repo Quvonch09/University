@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import univer.university.service.CloudService;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/v1/files")
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ import univer.university.service.CloudService;
 public class FileController {
     private final CloudService cloudService;
 
-    @PostMapping(consumes = {"multipart/form-data"})
+    @PostMapping(value = "/pdf", consumes = {"multipart/form-data"})
     public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
         try {
             String fileUrlFuture = cloudService.uploadFile(file, file.getOriginalFilename());
@@ -27,6 +29,16 @@ public class FileController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Xatolik: " + e.getMessage());
         }
+    }
+
+
+
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<String> uploadFile(
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        String url = cloudService.uploadImage(file);
+        return ResponseEntity.ok(url);
     }
 
 
