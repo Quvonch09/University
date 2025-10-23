@@ -20,13 +20,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = """
     select count(u.*) from users u join department d on u.department_id = d.id
-        join college c on d.college_id = c.id where c.id = ?1
+        join college c on d.college_id = c.id where c.id = ?1 and c.active = true
     """, nativeQuery = true)
     long countByCollege(Long collegeId);
 
 
     @Query(value = """
-    select count(u.*) from users u where u.department_id = ?1
+    select count(u.*) from users u join department d on u.department_id = d.id where d.id = ?1 and d.active = true
     """, nativeQuery = true)
     long countByDepartment(Long departmentId);
 
@@ -34,27 +34,28 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = """
     select count(u.*) from users u join department d on u.department_id = d.id 
         join college c on d.college_id = c.id join user_info uf on u.id = uf.user_id 
-        where c.id = ?1 and uf.academic_title = ?2
+        where c.id = ?1 and uf.academic_title = ?2 and c.active = true
     """, nativeQuery = true)
     long countAcademicByCollege(Long collegeId, String academicTitle);
 
 
     @Query(value = """
-    select count(u.*) from users u join user_info uf on u.id = uf.user_id
-     where u.department_id = ?1 and uf.academic_title = ?2
+    select count(u.*) from users u join user_info uf on u.id = uf.user_id join department d on u.department_id = d.id
+     where d.department_id = ?1 and uf.academic_title = ?2 and d.active = true
     """, nativeQuery = true)
     long countAcademicByDepartment(Long departmentId, String academicTitle);
 
 
     @Query(value = """
     select count(u.*) from users u join department d on u.department_id = d.id join college c on d.college_id = c.id
-    join user_info uf on u.id = uf.user_id where c.id = ?1 and uf.level = ?2
+    join user_info uf on u.id = uf.user_id where c.id = ?1 and uf.level = ?2 and c.active = true
     """, nativeQuery = true)
     long countLevelByCollege(Long collegeId, String level);
 
 
     @Query(value = """
-    select count(u.*) from users u join user_info uf on u.id = uf.user_id where u.department_id = ?1 and uf.level = ?2
+    select count(u.*) from users u join user_info uf on u.id = uf.user_id join department d on d.id = u.department_id
+                      where d.department_id = ?1 and uf.level = ?2 and d.active = true
     """, nativeQuery = true)
     long countLevelByDepartment(Long departmentId, String level);
 
