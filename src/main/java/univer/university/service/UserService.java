@@ -29,7 +29,6 @@ public class UserService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final InfoRepository infoRepository;
     private final HttpServletRequest request;
 
     public ApiResponse<UserDTO> getMe(User user){

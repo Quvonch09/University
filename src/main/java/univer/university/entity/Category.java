@@ -17,6 +17,4 @@ public class Category extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
-    @ManyToOne
-    private UserInfo userInfo;
 }
