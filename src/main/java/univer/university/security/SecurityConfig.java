@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/college/**",
                                 "/department/**",
+                                "/tadqiqot/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"

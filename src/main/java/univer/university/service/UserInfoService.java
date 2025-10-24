@@ -5,13 +5,10 @@ import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserInfoDTO;
 import univer.university.dto.request.ReqUserInfo;
-import univer.university.entity.Category;
 import univer.university.entity.User;
 import univer.university.entity.UserInfo;
-import univer.university.exception.BadRequestException;
 import univer.university.exception.DataNotFoundException;
 import univer.university.mapper.UserInfoMapper;
-import univer.university.repository.CategoryRepository;
 import univer.university.repository.UserInfoRepository;
 import univer.university.repository.UserRepository;
 
@@ -28,16 +25,12 @@ public class UserInfoService {
 
     private final UserInfoRepository userInfoRepository;
 
-    private final CategoryRepository categoryRepository;
-
     public ApiResponse<String> addUserInfo(ReqUserInfo req){
 
         User user = userRepository.findById(req.getUserId()).orElseThrow(() -> new DataNotFoundException("User not found"));
-        Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(() -> new DataNotFoundException("Category not found"));
 
         UserInfo userInfo = UserInfo.builder()
                 .user(user)
-                .category(category)
                 .academicTitle(req.getAcademicTitle())
                 .level(req.getLevel())
                 .build();

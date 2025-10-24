@@ -17,8 +17,6 @@ public class UserInfo extends BaseEntity {
     @ManyToOne
     private User user;
 
-    @ManyToOne
-    private Category category;
 
     @Enumerated(EnumType.STRING)
     private AcademicTitle academicTitle;

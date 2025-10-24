@@ -10,7 +10,6 @@ public class InfoMapper {
         return InfoDTO.builder()
                 .id(info.getId())
                 .object(info.getObject())
-                .categoryId(info.getCategory().getId())
                 .build();
     }
 }

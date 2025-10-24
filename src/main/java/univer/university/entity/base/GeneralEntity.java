@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import univer.university.entity.Category;
 import univer.university.entity.User;
 
 import java.io.Serializable;
@@ -35,9 +34,6 @@ public abstract class GeneralEntity implements Serializable {
     private int year;
 
     private String fileUrl;
-
-    @ManyToOne
-    private Category category;
 
     @ManyToOne
     private User user;
