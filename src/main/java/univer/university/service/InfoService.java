@@ -12,11 +12,9 @@ import univer.university.dto.request.ReqInfo;
 import univer.university.dto.request.ReqPage;
 import univer.university.dto.request.ReqUpdateInfo;
 import univer.university.dto.response.ResPageable;
-import univer.university.entity.Category;
 import univer.university.entity.Info;
 import univer.university.exception.DataNotFoundException;
 import univer.university.mapper.InfoMapper;
-import univer.university.repository.CategoryRepository;
 import univer.university.repository.InfoRepository;
 
 import java.util.List;
@@ -28,14 +26,11 @@ public class InfoService {
 
     private final InfoMapper infoMapper;
 
-    private final CategoryRepository categoryRepository;
 
     public ApiResponse<String> addInfo(ReqInfo req) {
-        Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(() -> new DataNotFoundException("Category not found"));
 
         Info info = Info.builder()
                 .object(req.getObject())
-                .category(category)
                 .build();
         infoRepository.save(info);
         return ApiResponse.success(null,"success");
@@ -65,10 +60,8 @@ public class InfoService {
     public ApiResponse<String> updateInfo(ReqUpdateInfo req){
 
         Info info = infoRepository.findById(req.getId()).orElseThrow(() -> new DataNotFoundException("Info not found"));
-        Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(() -> new DataNotFoundException("Category not found"));
 
         info.setObject(req.getObjectName());
-        info.setCategory(category);
         infoRepository.save(info);
         return ApiResponse.success(null,"success");
 

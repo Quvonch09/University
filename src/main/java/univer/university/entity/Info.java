@@ -18,7 +18,5 @@ public class Info extends BaseEntity {
     @Convert(converter = GenericJsonConverter.class)
     private Object object;
 
-    @ManyToOne
-    private Category category;
 
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import univer.university.entity.base.GeneralEntity;
 import univer.university.entity.enums.MemberEnum;
 
@@ -11,7 +12,7 @@ import univer.university.entity.enums.MemberEnum;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
 public class Tadqiqot extends GeneralEntity {
 
