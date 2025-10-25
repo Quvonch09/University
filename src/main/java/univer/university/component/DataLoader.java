@@ -12,6 +12,7 @@ import univer.university.repository.UserRepository;
 @Component
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
+
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
