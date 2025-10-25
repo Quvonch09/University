@@ -47,8 +47,8 @@ public class PublicationService {
         return ApiResponse.success(null,"success");
     }
 
-    public ApiResponse<ResPageable> getAllPage(ReqPage req) {
-        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+    public ApiResponse<ResPageable> getAllPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<Publication> all = publicationRepository.findAll(pageable);
 
         if (all.isEmpty()){
@@ -58,8 +58,8 @@ public class PublicationService {
         List<PublicationDTO> publicationDTOS = all.stream().map(publicationMapper::toPublicationDTO).toList();
 
         ResPageable resPageable = ResPageable.builder()
-                .page(req.getPage())
-                .size(req.getSize())
+                .page(page)
+                .size(size)
                 .totalPage(all.getTotalPages())
                 .totalElements(all.getTotalElements())
                 .body(publicationDTOS)

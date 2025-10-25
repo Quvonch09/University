@@ -22,9 +22,10 @@ public class PublicationController {
         return ResponseEntity.ok(publicationService.addPublication(req));
     }
 
-    @PostMapping("/get-page")
-    public ResponseEntity<ApiResponse<ResPageable>> getAllPage(@RequestBody ReqPage reqPage){
-        return ResponseEntity.ok(publicationService.getAllPage(reqPage));
+    @GetMapping("/get-page")
+    public ResponseEntity<ApiResponse<ResPageable>> getAllPage(@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(publicationService.getAllPage(page, size));
     }
 
     @GetMapping("/{publicationId}")

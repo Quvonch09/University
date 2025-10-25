@@ -21,9 +21,10 @@ public class ConsultationController {
         return ResponseEntity.ok(consultationService.addConsultation(req));
     }
 
-    @PostMapping("/get-page")
-    public ResponseEntity<ApiResponse<ResPageable>> getConsultationPage(@RequestBody ReqPage req) {
-        return ResponseEntity.ok(consultationService.getConsByPage(req));
+    @GetMapping("/get-page")
+    public ResponseEntity<ApiResponse<ResPageable>> getConsultationPage(@RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(consultationService.getConsByPage(page,size));
     }
 
     @GetMapping("/{id}")
