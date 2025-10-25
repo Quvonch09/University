@@ -4,10 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import univer.university.entity.Tadqiqot;
+import univer.university.entity.Nazorat;
 
 @Repository
-public interface TadqiqotRepository extends JpaRepository<Tadqiqot, Long> {
+public interface NazoratRepository extends JpaRepository<Nazorat, Long> {
 
-    Page<Tadqiqot> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    Page<Nazorat> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }
