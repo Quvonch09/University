@@ -9,7 +9,7 @@ import univer.university.entity.enums.MemberEnum;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReqTadqiqot {
+public class ReqNazorat {
 
     @Schema(hidden = true)
     private Long id;
@@ -18,8 +18,9 @@ public class ReqTadqiqot {
     private int year;
     private String fileUrl;
     private Long userId;
-    private boolean member;
+    private String researcherName;
     private String univerName;
-    private boolean finished;
+    private String level;
     private MemberEnum memberEnum;
+    private boolean finished;
 }
