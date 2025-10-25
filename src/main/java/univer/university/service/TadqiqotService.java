@@ -85,23 +85,7 @@ public class TadqiqotService {
 
     public ApiResponse<ResPageable> getAll(int page, int size){
         Page<Tadqiqot> tadqiqotPage = tadqiqotRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page, size));
-
-        if (tadqiqotPage.getTotalElements() == 0){
-            return ApiResponse.error("Tadqiqot not found");
-        }
-
-        List<ReqTadqiqot> reqTadqiqots = tadqiqotPage.getContent().stream().map(tadqiqotMapper::reqTadqiqot).toList();
-
-        ResPageable resPageable = ResPageable.builder()
-                .page(page)
-                .size(size)
-                .totalPage(tadqiqotPage.getTotalPages())
-                .totalElements(tadqiqotPage.getTotalElements())
-                .body(reqTadqiqots)
-                .build();
-
-        return ApiResponse.success( resPageable, "Success");
-
+        return check(tadqiqotPage, page, size);
     }
 
 
@@ -113,4 +97,34 @@ public class TadqiqotService {
         ReqTadqiqot reqTadqiqot = tadqiqotMapper.reqTadqiqot(tadqiqot);
         return ApiResponse.success(reqTadqiqot, "Success");
     }
+
+
+    public ApiResponse<ResPageable> getAllByUser(Long userId, int page, int size){
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new DataNotFoundException("User not found")
+        );
+
+        Page<Tadqiqot> tadqiqotPage = tadqiqotRepository.findAllByUser(user.getId(), PageRequest.of(page, size));
+
+        return check(tadqiqotPage, page,size);
+    }
+
+
+
+    private ApiResponse<ResPageable> check(Page<Tadqiqot> tadqiqotPage, int page, int size){
+        if (tadqiqotPage.getTotalElements() == 0){
+            return ApiResponse.error("Tadqiqot not found");
+        }
+
+        List<ReqTadqiqot> list = tadqiqotPage.getContent().stream().map(tadqiqotMapper::reqTadqiqot).toList();
+        ResPageable resPageable = ResPageable.builder()
+                .page(page)
+                .size(size)
+                .totalPage(tadqiqotPage.getTotalPages())
+                .totalElements(tadqiqotPage.getTotalElements())
+                .body(list)
+                .build();
+        return ApiResponse.success( resPageable, "Success");
+    }
+
 }

@@ -48,24 +48,8 @@ public class PublicationService {
     }
 
     public ApiResponse<ResPageable> getAllPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Publication> all = publicationRepository.findAll(pageable);
-
-        if (all.isEmpty()){
-            return ApiResponse.error("Publication is Empty");
-        }
-
-        List<PublicationDTO> publicationDTOS = all.stream().map(publicationMapper::toPublicationDTO).toList();
-
-        ResPageable resPageable = ResPageable.builder()
-                .page(page)
-                .size(size)
-                .totalPage(all.getTotalPages())
-                .totalElements(all.getTotalElements())
-                .body(publicationDTOS)
-                .build();
-        return ApiResponse.success(resPageable,"success");
-
+        Page<Publication> all = publicationRepository.findAll(PageRequest.of(page, size));
+        return check(all, page,size);
     }
 
     public ApiResponse<PublicationDTO> getPublicationById(Long id) {
@@ -81,4 +65,35 @@ public class PublicationService {
         return ApiResponse.success(null,"success");
     }
 
+
+    public ApiResponse<ResPageable> getByUserId(Long userId, int page, int size) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new DataNotFoundException("User Not Found")
+        );
+
+        Page<Publication> publications = publicationRepository.findAllByUser(user.getId(), PageRequest.of(page, size));
+        return check(publications, page,size);
+    }
+
+
+
+
+    private ApiResponse<ResPageable> check(Page<Publication> publications, int page, int size){
+        if (publications.isEmpty()){
+            return ApiResponse.error("Publication is Empty");
+        }
+
+        List<PublicationDTO> publicationDTOS = publications.stream().map(publicationMapper::toPublicationDTO).toList();
+
+        ResPageable resPageable = ResPageable.builder()
+                .page(page)
+                .size(size)
+                .totalPage(publications.getTotalPages())
+                .totalElements(publications.getTotalElements())
+                .body(publicationDTOS)
+                .build();
+        return ApiResponse.success(resPageable,"success");
+
+
+    }
 }

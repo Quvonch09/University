@@ -37,4 +37,12 @@ public class ConsultationController {
     public ResponseEntity<ApiResponse<String>> deleteConsultationById(@PathVariable Long id) {
         return ResponseEntity.ok(consultationService.deleteConsultation(id));
     }
+
+
+    @GetMapping("/byUser/{id}")
+    public ResponseEntity<ApiResponse<ResPageable>> getConsultationByUser(@PathVariable Long id,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(consultationService.getByUser(id,page,size));
+    }
 }

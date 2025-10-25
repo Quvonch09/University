@@ -3,6 +3,7 @@ package univer.university.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.request.ReqAward;
@@ -79,7 +80,32 @@ public class AwardService {
 
     public ApiResponse<ResPageable> getAll(int page, int size){
         Page<Award> awardPage = awardRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page, size));
+        return check(awardPage, page, size);
+    }
 
+
+
+    public ApiResponse<ReqAward> getAwardById(Long id){
+        Award award = awardRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Award not found")
+        );
+        return ApiResponse.success(awardMapper.reqAward(award), "Success");
+    }
+
+
+
+    public ApiResponse<ResPageable> getByUserId(Long id, int page, int size){
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("User not found")
+        );
+
+        Page<Award> awardPage = awardRepository.findByUser(user.getId(), PageRequest.of(page, size));
+        return check(awardPage, page, size);
+    }
+
+
+
+    private ApiResponse<ResPageable> check(Page<Award> awardPage, int page, int size){
         if (awardPage.getTotalElements() == 0){
             return ApiResponse.error("Award not found");
         }
@@ -94,14 +120,5 @@ public class AwardService {
                 .body(list)
                 .build();
         return ApiResponse.success(resPageable, "Success");
-    }
-
-
-
-    public ApiResponse<ReqAward> getAwardById(Long id){
-        Award award = awardRepository.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Award not found")
-        );
-        return ApiResponse.success(awardMapper.reqAward(award), "Success");
     }
 }

@@ -50,4 +50,12 @@ public class AwardController {
     public ResponseEntity<ApiResponse<ReqAward>> getTadqiqot(@PathVariable Long id) {
         return ResponseEntity.ok(awardService.getAwardById(id));
     }
+
+
+    @GetMapping("/byUser/{id}")
+    public ResponseEntity<ApiResponse<ResPageable>> getAwardByUser(@PathVariable Long id,
+                                                                          @RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(awardService.getByUserId(id,page,size));
+    }
 }

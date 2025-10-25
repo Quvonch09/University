@@ -20,20 +20,20 @@ public class NazoratController {
 
     @PostMapping
     @Operation(description = "MemberEnum ->  MILLIY, XALQARO")
-    public ResponseEntity<ApiResponse<String>> saveTadqiqot(@RequestBody ReqNazorat reqNazorat) {
+    public ResponseEntity<ApiResponse<String>> saveNazorat(@RequestBody ReqNazorat reqNazorat) {
         return ResponseEntity.ok(nazoratService.saveNazorat(reqNazorat));
     }
 
 
     @PutMapping("/{id}")
     @Operation(description = "MemberEnum ->  MILLIY, XALQARO")
-    public ResponseEntity<ApiResponse<String>> updateTadqiqot(@PathVariable Long id, @RequestBody ReqNazorat reqNazorat) {
+    public ResponseEntity<ApiResponse<String>> updateNazorat(@PathVariable Long id, @RequestBody ReqNazorat reqNazorat) {
         return ResponseEntity.ok(nazoratService.updateNazorat(id, reqNazorat));
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteTadqiqot(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<String>> deleteNazorat(@PathVariable Long id) {
         return ResponseEntity.ok(nazoratService.deleteNazorat(id));
     }
 
@@ -47,7 +47,15 @@ public class NazoratController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ReqNazorat>> getTadqiqot(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ReqNazorat>> getNazorat(@PathVariable Long id) {
         return ResponseEntity.ok(nazoratService.getOne(id));
+    }
+
+
+    @GetMapping("/byUser/{id}")
+    public ResponseEntity<ApiResponse<ResPageable>> getNazoratByUser(@PathVariable Long id,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(nazoratService.getByUser(id,page,size));
     }
 }

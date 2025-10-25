@@ -84,7 +84,33 @@ public class NazoratService {
 
     public ApiResponse<ResPageable> getAll(int page, int size){
         Page<Nazorat> nazoratPage = nazoratRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page, size));
+        return check(nazoratPage,page,size);
+    }
 
+
+
+    public ApiResponse<ReqNazorat> getOne(Long id){
+        Nazorat nazorat = nazoratRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("Nazorat not found")
+        );
+
+        return ApiResponse.success(nazoratMapper.reqNazorat(nazorat), "Success");
+    }
+
+
+
+    public ApiResponse<ResPageable> getByUser(Long id, int page, int size){
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("User not found")
+        );
+
+        Page<Nazorat> nazoratPage = nazoratRepository.findAllByUser(user.getId(), PageRequest.of(page, size));
+        return check(nazoratPage,page,size);
+    }
+
+
+
+    private ApiResponse<ResPageable> check(Page<Nazorat> nazoratPage, int page, int size){
         if (nazoratPage.getTotalElements() == 0){
             return ApiResponse.error("Nazorat not found");
         }
@@ -99,15 +125,5 @@ public class NazoratService {
                 .body(list)
                 .build();
         return ApiResponse.success(resPageable, "Success");
-    }
-
-
-
-    public ApiResponse<ReqNazorat> getOne(Long id){
-        Nazorat nazorat = nazoratRepository.findById(id).orElseThrow(
-                () -> new DataNotFoundException("Nazorat not found")
-        );
-
-        return ApiResponse.success(nazoratMapper.reqNazorat(nazorat), "Success");
     }
 }

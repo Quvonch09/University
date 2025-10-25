@@ -41,4 +41,12 @@ public class PublicationController {
     }
 
 
+    @GetMapping("/byUser/{id}")
+    public ResponseEntity<ApiResponse<ResPageable>> getPublicationByUser(@PathVariable Long id,
+                                                                            @RequestParam(defaultValue = "0") int page,
+                                                                            @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(publicationService.getByUserId(id,page,size));
+    }
+
+
 }
