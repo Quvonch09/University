@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.ConsultationDTO;
-import univer.university.dto.PublicationDTO;
 import univer.university.dto.request.ReqConsultation;
 import univer.university.dto.request.ReqPage;
 import univer.university.dto.response.ResPageable;
@@ -46,8 +45,8 @@ public class ConsultationService {
 
     }
 
-    public ApiResponse<ResPageable> getConsByPage(ReqPage req){
-        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+    public ApiResponse<ResPageable> getConsByPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<Consultation> all = consultationRepository.findAll(pageable);
         if(all.isEmpty()){
             return ApiResponse.error("all is empty");
@@ -55,8 +54,8 @@ public class ConsultationService {
         List<ConsultationDTO> consultationDTOS = all.stream().map(consultationMapper::toConsultationDTO).toList();
 
         ResPageable resPageable = ResPageable.builder()
-                .page(req.getPage())
-                .size(req.getSize())
+                .page(page)
+                .size(size)
                 .totalPage(all.getTotalPages())
                 .totalElements(all.getTotalElements())
                 .body(consultationDTOS)
