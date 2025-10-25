@@ -46,8 +46,36 @@ public class ConsultationService {
     }
 
     public ApiResponse<ResPageable> getConsByPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Consultation> all = consultationRepository.findAll(pageable);
+        Page<Consultation> all = consultationRepository.findAll(PageRequest.of(page, size));
+        return check(all, page, size);
+    }
+
+    public ApiResponse<ConsultationDTO> getConsultationById(Long id){
+        Consultation consultation = consultationRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Consultation Not Found"));
+        ConsultationDTO consultationDTO = consultationMapper.toConsultationDTO(consultation);
+        return ApiResponse.success(consultationDTO,"success");
+    }
+
+    public ApiResponse<String> deleteConsultation(Long id){
+        Consultation consultation = consultationRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Consultation Not Found"));
+        consultationRepository.delete(consultation);
+        return ApiResponse.success(null,"success");
+    }
+
+
+
+    public ApiResponse<ResPageable> getByUser(Long id, int page, int size){
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException("User Not Found")
+        );
+
+        Page<Consultation> consultationPage = consultationRepository.findAllByUser(user.getId(), PageRequest.of(page, size));
+        return check(consultationPage, page, size);
+    }
+
+
+
+    private ApiResponse<ResPageable> check(Page<Consultation> all, int page, int size){
         if(all.isEmpty()){
             return ApiResponse.error("all is empty");
         }
@@ -61,18 +89,6 @@ public class ConsultationService {
                 .body(consultationDTOS)
                 .build();
         return ApiResponse.success(resPageable,"success");
-    }
-
-    public ApiResponse<ConsultationDTO> getConsultationById(Long id){
-        Consultation consultation = consultationRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Consultation Not Found"));
-        ConsultationDTO consultationDTO = consultationMapper.toConsultationDTO(consultation);
-        return ApiResponse.success(consultationDTO,"success");
-    }
-
-    public ApiResponse<String> deleteConsultation(Long id){
-        Consultation consultation = consultationRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Consultation Not Found"));
-        consultationRepository.delete(consultation);
-        return ApiResponse.success(null,"success");
     }
 
 }
