@@ -48,4 +48,12 @@ public class TadqiqotController {
     public ResponseEntity<ApiResponse<ReqTadqiqot>> getTadqiqot(@PathVariable Long id) {
         return ResponseEntity.ok(tadqiqotService.getOneTadqiqot(id));
     }
+
+
+    @GetMapping("/byUser/{id}")
+    public ResponseEntity<ApiResponse<ResPageable>> getTadqiqotByUser(@PathVariable Long id,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(tadqiqotService.getAllByUser(id,page,size));
+    }
 }
