@@ -28,6 +28,12 @@ public class ConsultationController {
         return ResponseEntity.ok(consultationService.getConsByPage(page,size));
     }
 
+    @PutMapping("/{id}")
+    @Operation(description = "FinishedEnum - > COMPLETED,IN_PROGRESS,FINISHED")
+    public ResponseEntity<ApiResponse<String>> updateConsultation(@PathVariable Long id, @RequestBody ReqConsultation req) {
+        return ResponseEntity.ok(consultationService.updateConsultation(id, req));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ConsultationDTO>> getConsultationById(@PathVariable Long id) {
         return ResponseEntity.ok(consultationService.getConsultationById(id));

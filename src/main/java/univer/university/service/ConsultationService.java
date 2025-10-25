@@ -50,6 +50,22 @@ public class ConsultationService {
         return check(all, page, size);
     }
 
+    public ApiResponse<String> updateConsultation(Long id ,ReqConsultation req) {
+        User user = userRepository.findById(req.getUserId()).orElseThrow(() -> new DataNotFoundException("User Not Found"));
+        Consultation consultation = consultationRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Consultation Not Found"));
+
+        consultation.setUser(user);
+        consultation.setName(req.getName());
+        consultation.setDescription(req.getDescription());
+        consultation.setFileUrl(req.getFileUrl());
+        consultation.setYear(req.getYear());
+        consultation.setMember(req.isMember());
+        consultation.setFinishedEnum(req.getFinishedEnum());
+        consultation.setLeader(req.isLeader());
+        consultationRepository.save(consultation);
+        return ApiResponse.success(null,"success");
+    }
+
     public ApiResponse<ConsultationDTO> getConsultationById(Long id){
         Consultation consultation = consultationRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Consultation Not Found"));
         ConsultationDTO consultationDTO = consultationMapper.toConsultationDTO(consultation);

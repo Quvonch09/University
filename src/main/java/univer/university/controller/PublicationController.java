@@ -30,6 +30,13 @@ public class PublicationController {
         return ResponseEntity.ok(publicationService.getAllPage(page, size));
     }
 
+    @PutMapping("/{id}")
+    @Operation(description = "{PublicationTypeEnum -> ARTICLE,BOOK, PROCEEDING, OTHERS} ," +
+            " {AuthorEnum ->COAUTHOR,FIRST_AUTHOR,BOTH_AUTHOR} , {DegreeEnum - >INTERNATIONAL,NATIONAL}")
+    public ResponseEntity<ApiResponse<String>> updatePublication(@PathVariable Long id ,@RequestBody ReqPublication req){
+        return ResponseEntity.ok(publicationService.updatePublication(id, req));
+    }
+
     @GetMapping("/{publicationId}")
     public ResponseEntity<ApiResponse<PublicationDTO>> getPublicationById(@PathVariable Long publicationId){
         return ResponseEntity.ok(publicationService.getPublicationById(publicationId));

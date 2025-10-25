@@ -52,6 +52,27 @@ public class PublicationService {
         return check(all, page,size);
     }
 
+    public ApiResponse<String> updatePublication(Long id,ReqPublication req) {
+
+        Publication publication = publicationRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Publication Not Found"));
+
+        User user = userRepository.findById(req.getUserId()).orElseThrow(() -> new DataNotFoundException("User Not Found"));
+
+        publication.setUser(user);
+        publication.setName(req.getName());
+        publication.setDescription(req.getDescription());
+        publication.setYear(req.getYear());
+        publication.setFileUrl(req.getFileUrl());
+        publication.setType(req.getType());
+        publication.setAuthor(req.getAuthor());
+        publication.setDegree(req.getDegree());
+        publication.setVolume(req.getVolume());
+        publication.setInstitution(req.getInstitution());
+        publication.setPopular(req.isPopular());
+        publicationRepository.save(publication);
+        return ApiResponse.success(null,"success");
+    }
+
     public ApiResponse<PublicationDTO> getPublicationById(Long id) {
 
         Publication publication = publicationRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Publication Not Found"));
