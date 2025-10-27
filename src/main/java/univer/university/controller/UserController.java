@@ -10,6 +10,7 @@ import univer.university.dto.request.ReqUserDTO;
 import univer.university.dto.response.AgeGenderStatsProjection;
 import univer.university.dto.response.GenderStatsProjection;
 import univer.university.dto.response.ResDashboard;
+import univer.university.dto.response.ResPageable;
 import univer.university.entity.User;
 import univer.university.service.UserService;
 
@@ -55,6 +56,16 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<UserDTO>> getById(@PathVariable Long userId){
         return ResponseEntity.ok(userService.getById(userId));
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<ResPageable>> searchUser(@RequestParam(required = false) String name,
+                                                               @RequestParam(required = false) String college,
+                                                               @RequestParam(required = false) String lavozim,
+                                                               @RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(userService.searchUsers(name, college, lavozim, page, size));
     }
 
 
