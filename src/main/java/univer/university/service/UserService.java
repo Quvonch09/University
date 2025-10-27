@@ -2,13 +2,13 @@ package univer.university.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
 import univer.university.dto.request.ReqUserDTO;
-import univer.university.dto.response.AgeGenderStatsProjection;
-import univer.university.dto.response.GenderStatsProjection;
-import univer.university.dto.response.ResDashboard;
+import univer.university.dto.response.*;
 import univer.university.entity.Info;
 import univer.university.entity.User;
 import univer.university.entity.enums.Role;
@@ -98,6 +98,27 @@ public class UserService {
     public ApiResponse<List<AgeGenderStatsProjection>> getAgeGenderDashboard(){
         List<AgeGenderStatsProjection> ageGenderStatistics = userRepository.getAgeGenderStatistics();
         return ApiResponse.success(ageGenderStatistics, "Success");
+    }
+
+
+
+    public ApiResponse<ResPageable> searchUsers(String name, String college, String lavozim, int page, int size){
+        Page<User> userPage = userRepository.findAllByUser(name, college, lavozim, PageRequest.of(page, size));
+        if (userPage.getTotalElements() == 0){
+            return ApiResponse.error("User not found");
+        }
+
+        List<ResUser> list = userPage.getContent().stream().map(userMapper::resUser).toList();
+
+        ResPageable resPageable = ResPageable.builder()
+                .page(page)
+                .size(size)
+                .totalPage(userPage.getTotalPages())
+                .totalElements(userPage.getTotalElements())
+                .body(list)
+                .build();
+
+        return ApiResponse.success(resPageable, "Success");
     }
 
 }

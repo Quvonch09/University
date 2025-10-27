@@ -1,7 +1,10 @@
 package univer.university.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import univer.university.dto.response.AgeGenderStatsProjection;
 import univer.university.dto.response.GenderStatsProjection;
@@ -119,5 +122,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     long countByRoleAndEnabledTrue(Role role);
+
+
+
+    @Query(value = """
+    select u.* from users u join department d on d.id = u.department_id join college c on d.college_id = c.id
+    join lavozm l on l.id = u.lavozm_id where
+    (:name IS NULL OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :name, '%'))) AND
+    (:college IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :college, '%')) OR
+     LOWER(c.name) LIKE LOWER(CONCAT('%', :college, '%'))) AND
+    (:lavozim IS NULL OR LOWER(l.name) LIKE LOWER(CONCAT('%', :lavozim, '%'))) order by u.created_at desc
+    """, nativeQuery = true)
+    Page<User> findAllByUser(@Param("name") String name,
+                             @Param("college") String college,
+                             @Param("lavozim") String lavozim,
+                             Pageable pageable);
 
 }
