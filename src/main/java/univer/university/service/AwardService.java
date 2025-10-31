@@ -105,10 +105,10 @@ public class AwardService {
 
 
 
-    private ApiResponse<ResPageable> check(Page<Award> awardPage, int page, int size){
-        if (awardPage.getTotalElements() == 0){
-            return ApiResponse.error("Award not found");
-        }
+    public ApiResponse<ResPageable> check(Page<Award> awardPage, int page, int size){
+//        if (awardPage.getTotalElements() == 0){
+//            return ApiResponse.error("Award not found");
+//        }
 
         List<ReqAward> list = awardPage.getContent().stream().map(awardMapper::reqAward).toList();
 

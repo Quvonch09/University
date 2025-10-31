@@ -92,9 +92,9 @@ public class ConsultationService {
 
 
     private ApiResponse<ResPageable> check(Page<Consultation> all, int page, int size){
-        if(all.isEmpty()){
-            return ApiResponse.error("all is empty");
-        }
+//        if(all.isEmpty()){
+//            return ApiResponse.error("all is empty");
+//        }
         List<ConsultationDTO> consultationDTOS = all.stream().map(consultationMapper::toConsultationDTO).toList();
 
         ResPageable resPageable = ResPageable.builder()

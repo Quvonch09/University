@@ -54,8 +54,10 @@ public class UserController {
 
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<UserDTO>> getById(@PathVariable Long userId){
-        return ResponseEntity.ok(userService.getById(userId));
+    public ResponseEntity<ApiResponse<UserDTO>> getById(@PathVariable Long userId,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(userService.getById(userId, page, size));
     }
 
 
