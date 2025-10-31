@@ -112,9 +112,9 @@ public class TadqiqotService {
 
 
     private ApiResponse<ResPageable> check(Page<Tadqiqot> tadqiqotPage, int page, int size){
-        if (tadqiqotPage.getTotalElements() == 0){
-            return ApiResponse.error("Tadqiqot not found");
-        }
+//        if (tadqiqotPage.getTotalElements() == 0){
+//            return ApiResponse.error("Tadqiqot not found");
+//        }
 
         List<ReqTadqiqot> list = tadqiqotPage.getContent().stream().map(tadqiqotMapper::reqTadqiqot).toList();
         ResPageable resPageable = ResPageable.builder()
