@@ -2,9 +2,12 @@ package univer.university.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.internal.constraintvalidators.bv.time.past.AbstractPastInstantBasedValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import univer.university.dto.AcademicQualificationDTO;
 import univer.university.dto.ApiResponse;
+import univer.university.dto.response.ResPageable;
 import univer.university.entity.AcademicQualification;
 import univer.university.entity.User;
 import univer.university.exception.DataNotFoundException;
@@ -95,5 +98,29 @@ public class AcademicQualificationService {
 
         return ApiResponse.success(academicQualificationMapper.academicQualificationDTO(
                 academicQualification), "Success");
+    }
+
+
+
+    public ApiResponse<ResPageable> getByUserId(Long userId, int page, int size){
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new DataNotFoundException("User not found")
+        );
+
+        Page<AcademicQualification> qualificationPage =
+                academicQualificationRepository.findAllByUserId(user.getId(), PageRequest.of(page, size));
+
+        List<AcademicQualificationDTO> list =
+                qualificationPage.getContent().stream().map(academicQualificationMapper::academicQualificationDTO).toList();
+
+        ResPageable resPageable = ResPageable.builder()
+                .page(page)
+                .size(size)
+                .totalPage(qualificationPage.getTotalPages())
+                .totalElements(qualificationPage.getTotalElements())
+                .body(list)
+                .build();
+
+        return ApiResponse.success(resPageable, "Success");
     }
 }

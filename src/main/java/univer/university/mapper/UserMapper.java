@@ -37,6 +37,7 @@ public class UserMapper {
 
 
     public UserDTO userToDTO(User user,
+                             ResPageable qualification,
                              ResPageable research,
                              ResPageable award,
                              ResPageable consultation,
@@ -60,6 +61,7 @@ public class UserMapper {
                 .biography(user.getBiography())
                 .fileUrl(user.getFileUrl())
                 .profession(user.getProfession())
+                .qualification(qualification)
                 .build();
     }
 
