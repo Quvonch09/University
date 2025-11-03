@@ -38,6 +38,7 @@ public class UserService {
     private final PublicationService publicationService;
     private final NazoratService nazoratService;
     private final ConsultationService consultationService;
+    private final AcademicQualificationService academicQualificationService;
 
     public ApiResponse<UserDTO> getMe(User user){
         return ApiResponse.success(userMapper.userDTO(user), "Success");
@@ -50,9 +51,12 @@ public class UserService {
         ResPageable publication = publicationService.getByUserId(id, page, size).getData();
         ResPageable nazorat = nazoratService.getByUser(id, page, size).getData();
         ResPageable consultation = consultationService.getByUser(id, page, size).getData();
-        return ApiResponse.success(userMapper.userToDTO(user,research,award,consultation,nazorat,publication), "Success");
+        ResPageable qualification = academicQualificationService.getByUserId(id, page, size).getData();
+        return ApiResponse.success(userMapper.userToDTO(user,qualification,research,award,consultation,nazorat,publication), "Success");
     }
 
+    
+    
     public ApiResponse<String> update(User user, UserDTO userDTO) {
 
         User existingUser = userRepository.findById(user.getId())

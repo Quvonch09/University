@@ -39,6 +39,9 @@ public class UserDTO {
     private String departmentName;
 
     @Schema(hidden = true)
+    private ResPageable qualification;
+
+    @Schema(hidden = true)
     private ResPageable research;
 
     @Schema(hidden = true)
