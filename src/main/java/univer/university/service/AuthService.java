@@ -87,11 +87,13 @@ public class AuthService {
                 .input(authRegister.getInput())
                 .lavozm(lavozm)
                 .enabled(true)
+                .fileUrl(authRegister.getFileUrl())
+                .profession(authRegister.getProfession())
                 .email(authRegister.getEmail())
                 .age(authRegister.getAge())
                 .gender(authRegister.isGender())
                 .build();
-        User save = userRepository.save(teacher);
+        userRepository.save(teacher);
 
 //        UserInfo userInfo = UserInfo.builder()
 //                .user(save)

@@ -36,7 +36,11 @@ public class User extends BaseEntity implements UserDetails {
 
     private String imgUrl;
 
+    private String fileUrl;
+
     private String input;
+
+    private String profession;
 
     private boolean gender; // true-male, false-female
 

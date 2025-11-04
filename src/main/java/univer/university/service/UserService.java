@@ -9,11 +9,14 @@ import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
 import univer.university.dto.request.ReqUserDTO;
 import univer.university.dto.response.*;
+import univer.university.entity.Award;
 import univer.university.entity.Info;
 import univer.university.entity.User;
 import univer.university.entity.enums.Role;
 import univer.university.exception.DataNotFoundException;
+import univer.university.mapper.AwardMapper;
 import univer.university.mapper.UserMapper;
+import univer.university.repository.AwardRepository;
 import univer.university.repository.InfoRepository;
 import univer.university.repository.UserRepository;
 import univer.university.security.JwtService;
@@ -30,16 +33,30 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final HttpServletRequest request;
+    private final AwardService awardService;
+    private final TadqiqotService tadqiqotService;
+    private final PublicationService publicationService;
+    private final NazoratService nazoratService;
+    private final ConsultationService consultationService;
+    private final AcademicQualificationService academicQualificationService;
 
     public ApiResponse<UserDTO> getMe(User user){
         return ApiResponse.success(userMapper.userDTO(user), "Success");
     }
 
-    public ApiResponse<UserDTO> getById(Long id){
+    public ApiResponse<UserDTO> getById(Long id, int page, int size){
         User user = userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
-        return ApiResponse.success(userMapper.userDTO(user), "Success");
+        ResPageable award = awardService.getByUserId(id, page, size).getData();
+        ResPageable research = tadqiqotService.getAllByUser(id, page, size).getData();
+        ResPageable publication = publicationService.getByUserId(id, page, size).getData();
+        ResPageable nazorat = nazoratService.getByUser(id, page, size).getData();
+        ResPageable consultation = consultationService.getByUser(id, page, size).getData();
+        ResPageable qualification = academicQualificationService.getByUserId(id, page, size).getData();
+        return ApiResponse.success(userMapper.userToDTO(user,qualification,research,award,consultation,nazorat,publication), "Success");
     }
 
+    
+    
     public ApiResponse<String> update(User user, UserDTO userDTO) {
 
         User existingUser = userRepository.findById(user.getId())

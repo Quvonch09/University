@@ -100,9 +100,9 @@ public class PublicationService {
 
 
     private ApiResponse<ResPageable> check(Page<Publication> publications, int page, int size){
-        if (publications.isEmpty()){
-            return ApiResponse.error("Publication is Empty");
-        }
+//        if (publications.isEmpty()){
+//            return ApiResponse.error("Publication is Empty");
+//        }
 
         List<PublicationDTO> publicationDTOS = publications.stream().map(publicationMapper::toPublicationDTO).toList();
 

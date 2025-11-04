@@ -18,6 +18,10 @@ public class AuthRegister {
 
     private String imgUrl;
 
+    private String fileUrl;
+
+    private String profession;
+
     private String input;
 
     private Long lavozmId;

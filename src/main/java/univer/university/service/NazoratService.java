@@ -111,9 +111,9 @@ public class NazoratService {
 
 
     private ApiResponse<ResPageable> check(Page<Nazorat> nazoratPage, int page, int size){
-        if (nazoratPage.getTotalElements() == 0){
-            return ApiResponse.error("Nazorat not found");
-        }
+//        if (nazoratPage.getTotalElements() == 0){
+//            return ApiResponse.error("Nazorat not found");
+//        }
 
         List<ReqNazorat> list = nazoratPage.getContent().stream().map(nazoratMapper::reqNazorat).toList();
 
