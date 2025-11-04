@@ -50,7 +50,7 @@ public class DepartmentService {
                 () -> new DataNotFoundException("Department not found")
         );
 
-        College college = collageRepository.findById(id).orElseThrow(
+        College college = collageRepository.findById(reqDepartment.getCollegeId()).orElseThrow(
                 () -> new DataNotFoundException("Collage not found")
         );
 
