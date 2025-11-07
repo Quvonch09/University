@@ -38,7 +38,7 @@ public class ConsultationService {
         cons.setYear(req.getYear());
         cons.setMember(req.isMember());
         cons.setFinishedEnum(req.getFinishedEnum());
-        cons.setLeader(req.isLeader());
+        cons.setLeader(req.getLeader());
         consultationRepository.save(cons);
 
         return ApiResponse.success(null,"success");
@@ -61,7 +61,7 @@ public class ConsultationService {
         consultation.setYear(req.getYear());
         consultation.setMember(req.isMember());
         consultation.setFinishedEnum(req.getFinishedEnum());
-        consultation.setLeader(req.isLeader());
+        consultation.setLeader(req.getLeader());
         consultationRepository.save(consultation);
         return ApiResponse.success(null,"success");
     }

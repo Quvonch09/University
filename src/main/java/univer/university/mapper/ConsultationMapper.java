@@ -26,8 +26,7 @@ public class ConsultationMapper {
                 .year(consultation.getYear())
                 .fileUrl(consultation.getFileUrl())
                 .finishedEnum(consultation.getFinishedEnum())
-                .isLeader(consultation.isLeader())
-                .isLeader(consultation.isLeader())
+                .leader(consultation.getLeader())
                 .build();
     }
 }
