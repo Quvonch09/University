@@ -110,7 +110,8 @@ public class SecurityConfig {
 
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
-                "http://156.67.31.142/",
+                "http://156.67.31.142",
+                "https://qdtu.uz",
                 "http://localhost:8080"
         ));
 
