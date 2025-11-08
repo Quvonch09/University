@@ -131,7 +131,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = """
     select u.* from users u join department d on d.id = u.department_id join college c on d.college_id = c.id
-    join lavozm l on l.id = u.lavozm_id where u.role <> 'ROLE_ADMIN'
+    join lavozm l on l.id = u.lavozm_id where u.role <> 'ROLE_ADMIN' and
     (:name IS NULL OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :name, '%'))) AND
     (:college IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :college, '%')) OR
      LOWER(c.name) LIKE LOWER(CONCAT('%', :college, '%'))) AND
