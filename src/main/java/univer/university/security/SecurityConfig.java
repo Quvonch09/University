@@ -112,6 +112,7 @@ public class SecurityConfig {
                 "http://localhost:5173",
                 "http://156.67.31.142",
                 "https://qdtu.uz",
+                "https://admin.qdtu.uz",
                 "http://localhost:8080"
         ));
 
