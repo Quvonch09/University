@@ -21,6 +21,6 @@ public class Consultation extends GeneralEntity {
     @Enumerated(EnumType.STRING)
     private FinishedEnum finishedEnum;
 
-    private boolean isLeader;
+    private String leader;
 
 }

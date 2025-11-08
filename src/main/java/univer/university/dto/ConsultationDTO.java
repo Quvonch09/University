@@ -26,5 +26,5 @@ public class ConsultationDTO {
 
     private FinishedEnum finishedEnum;
 
-    private boolean isLeader;
+    private String leader;
 }

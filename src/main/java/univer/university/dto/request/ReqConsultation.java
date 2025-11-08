@@ -21,5 +21,5 @@ public class ReqConsultation {
     private Long userId;
     private boolean member;
     private FinishedEnum finishedEnum;
-    private boolean isLeader;
+    private String leader;
 }
