@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import univer.university.entity.Consultation;
 import univer.university.entity.Publication;
+import univer.university.entity.enums.AuthorEnum;
+import univer.university.entity.enums.PublicTypeEnum;
 
 @Repository
 public interface PublicationRepository extends JpaRepository<Publication, Long> {
@@ -14,4 +16,7 @@ public interface PublicationRepository extends JpaRepository<Publication, Long> 
     select * from publication where user_id = ?1 order by created_at desc
     """, nativeQuery = true)
     Page<Publication> findAllByUser(Long userId, Pageable pageable);
+
+    long countAllByUserIdAndType(Long userId, PublicTypeEnum publicTypeEnum);
+    long countAllByUserId(Long userId);
 }

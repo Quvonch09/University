@@ -15,4 +15,6 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
     """, nativeQuery = true)
     Page<Consultation> findAllByUser(Long userId, Pageable pageable);
 
+
+    long countAllByUserId(Long userId);
 }

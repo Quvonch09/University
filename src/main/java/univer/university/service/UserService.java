@@ -7,22 +7,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
-import univer.university.dto.request.ReqUserDTO;
+import univer.university.dto.UserStatisticsDto;
 import univer.university.dto.response.*;
-import univer.university.entity.Award;
-import univer.university.entity.Info;
 import univer.university.entity.User;
+import univer.university.entity.enums.AwardEnum;
+import univer.university.entity.enums.PublicTypeEnum;
 import univer.university.entity.enums.Role;
 import univer.university.exception.DataNotFoundException;
-import univer.university.mapper.AwardMapper;
 import univer.university.mapper.UserMapper;
-import univer.university.repository.AwardRepository;
-import univer.university.repository.InfoRepository;
-import univer.university.repository.UserRepository;
+import univer.university.repository.*;
 import univer.university.security.JwtService;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -39,6 +35,11 @@ public class UserService {
     private final NazoratService nazoratService;
     private final ConsultationService consultationService;
     private final AcademicQualificationService academicQualificationService;
+    private final TadqiqotRepository tadqiqotRepository;
+    private final PublicationRepository publicationRepository;
+    private final NazoratRepository nazoratRepository;
+    private final ConsultationRepository consultationRepository;
+    private final AwardRepository awardRepository;
 
     public ApiResponse<UserDTO> getMe(User user){
         return ApiResponse.success(userMapper.userDTO(user), "Success");
@@ -138,4 +139,49 @@ public class UserService {
         return ApiResponse.success(resPageable, "Success");
     }
 
+
+
+
+
+
+    public ApiResponse<UserStatisticsDto> getUserDashboard(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new DataNotFoundException("User not found")
+        );
+
+        long countTadqiqot = tadqiqotRepository.countAllByUserId(user.getId());
+        long countBook = publicationRepository.countAllByUserIdAndType(user.getId(), PublicTypeEnum.BOOK);
+        long countArticle = publicationRepository.countAllByUserIdAndType(user.getId(), PublicTypeEnum.ARTICLE);
+        long countProceeding = publicationRepository.countAllByUserIdAndType(user.getId(), PublicTypeEnum.PROCEEDING);
+        long countOthers = publicationRepository.countAllByUserIdAndType(user.getId(), PublicTypeEnum.OTHERS);
+        long countPublication = publicationRepository.countAllByUserId(user.getId());
+        long countNazorat = nazoratRepository.countAllByUserId(user.getId());
+        long countConsultation = consultationRepository.countAllByUserId(user.getId());
+        long countAward = awardRepository.countAllByUserId(user.getId());
+        long countTrening = awardRepository.countAllByUserIdAndAwardEnum(user.getId(), AwardEnum.Trening_Va_Amaliyot);
+        long countTahririyat = awardRepository.countAllByUserIdAndAwardEnum(user.getId(), AwardEnum.Tahririyat_Kengashiga_Azolik);
+        long countMaxsus = awardRepository.countAllByUserIdAndAwardEnum(user.getId(), AwardEnum.Maxsus_Kengash_Azoligi);
+        long countPatent = awardRepository.countAllByUserIdAndAwardEnum(user.getId(), AwardEnum.Patent_Dgu);
+        long countDavlat = awardRepository.countAllByUserIdAndAwardEnum(user.getId(), AwardEnum.Davlat_Mukofoti);
+
+
+        UserStatisticsDto userStatisticsDto = UserStatisticsDto.builder()
+                .boshqalar(countOthers)
+                .tadqiqotlar(countTadqiqot)
+                .davlatMukofotlari(countDavlat)
+                .ishYuritishlar(countProceeding)
+                .kitoblar(countBook)
+                .maqolalar(countArticle)
+                .maslahatlar(countConsultation)
+                .nashrlar(countPublication)
+                .maxsusKengash(countMaxsus)
+                .mukofotlar(countAward)
+                .nazorat(countNazorat)
+                .treninglar(countTrening)
+                .tahririyatAzolik(countTahririyat)
+                .patentlar(countPatent)
+                .build();
+
+        return ApiResponse.success(userStatisticsDto, "Success");
+    }
 }

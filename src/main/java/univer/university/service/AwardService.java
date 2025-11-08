@@ -33,7 +33,7 @@ public class AwardService {
         Award award = Award.builder()
                 .user(user)
                 .year(reqAward.getYear())
-                .input(reqAward.getInput())
+                .awardEnum(reqAward.getAwardEnum())
                 .description(reqAward.getDescription())
                 .memberEnum(reqAward.getMemberEnum())
                 .fileUrl(reqAward.getFileUrl())
@@ -55,7 +55,7 @@ public class AwardService {
         );
 
         award.setYear(reqAward.getYear());
-        award.setInput(reqAward.getInput());
+        award.setAwardEnum(reqAward.getAwardEnum());
         award.setDescription(reqAward.getDescription());
         award.setMemberEnum(reqAward.getMemberEnum());
         award.setFileUrl(reqAward.getFileUrl());

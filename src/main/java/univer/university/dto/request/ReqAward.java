@@ -2,6 +2,7 @@ package univer.university.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import univer.university.entity.enums.AwardEnum;
 import univer.university.entity.enums.MemberEnum;
 
 @Getter
@@ -17,6 +18,6 @@ public class ReqAward {
     private int year;
     private String fileUrl;
     private Long userId;
-    private String input;
+    private AwardEnum awardEnum;
     private MemberEnum memberEnum;
 }

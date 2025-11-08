@@ -17,4 +17,6 @@ public interface NazoratRepository extends JpaRepository<Nazorat, Long> {
     select * from nazorat where user_id = ?1 order by created_at desc
     """, nativeQuery = true)
     Page<Nazorat> findAllByUser(Long userId, Pageable pageable);
+
+    long countAllByUserId(Long userId);
 }

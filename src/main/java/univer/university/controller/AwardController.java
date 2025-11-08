@@ -19,7 +19,11 @@ public class AwardController {
     public final AwardService awardService;
 
     @PostMapping
-    @Operation(description = "MemberEnum ->  MILLIY, XALQARO")
+    @Operation(description = "MemberEnum ->  MILLIY, XALQARO \n AwardEnum -> Trening_Va_Amaliyot,\n" +
+            "    Tahririyat_Kengashiga_Azolik,\n" +
+            "    Maxsus_Kengash_Azoligi,\n" +
+            "    Patent_Dgu,\n" +
+            "    Davlat_Mukofoti")
     public ResponseEntity<ApiResponse<String>> saveTadqiqot(@RequestBody ReqAward reqAward) {
         return ResponseEntity.ok(awardService.saveAward(reqAward));
     }
