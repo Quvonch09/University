@@ -13,7 +13,7 @@ public class AwardMapper {
                 .description(award.getDescription())
                 .year(award.getYear())
                 .memberEnum(award.getMemberEnum())
-                .input(award.getInput())
+                .awardEnum(award.getAwardEnum())
                 .fileUrl(award.getFileUrl())
                 .userId(award.getUser().getId())
                 .build();

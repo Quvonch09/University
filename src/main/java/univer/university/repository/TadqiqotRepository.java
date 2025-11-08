@@ -17,4 +17,7 @@ public interface TadqiqotRepository extends JpaRepository<Tadqiqot, Long> {
     select * from tadqiqot where user_id = ?1 order by created_at desc
     """, nativeQuery = true)
     Page<Tadqiqot> findAllByUser(Long userId, Pageable pageable);
+
+
+    long countAllByUserId(Long userId);
 }

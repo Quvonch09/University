@@ -6,6 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
+import univer.university.dto.UserStatisticsDto;
 import univer.university.dto.request.ReqUserDTO;
 import univer.university.dto.response.AgeGenderStatsProjection;
 import univer.university.dto.response.GenderStatsProjection;
@@ -68,6 +69,15 @@ public class UserController {
                                                                @RequestParam(defaultValue = "0") int page,
                                                                @RequestParam(defaultValue = "10") int size){
         return ResponseEntity.ok(userService.searchUsers(name, college, lavozim, page, size));
+    }
+
+
+
+
+
+    @GetMapping("/statistics/{userId}")
+    public ResponseEntity<ApiResponse<UserStatisticsDto>> getStatistic(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getUserDashboard(userId));
     }
 
 

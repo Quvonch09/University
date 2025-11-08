@@ -6,6 +6,7 @@ import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import univer.university.entity.base.GeneralEntity;
+import univer.university.entity.enums.AwardEnum;
 import univer.university.entity.enums.MemberEnum;
 
 @Getter
@@ -15,7 +16,7 @@ import univer.university.entity.enums.MemberEnum;
 @SuperBuilder
 @Entity
 public class Award extends GeneralEntity {
-    private String input;
+    private AwardEnum awardEnum;
     @Enumerated(EnumType.STRING)
     private MemberEnum memberEnum;
 }
