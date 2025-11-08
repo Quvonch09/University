@@ -78,11 +78,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     long countByRole(Role role);
+
+    @Query(value = """
+    select count(u.*) from users u where u.gender = ?1 AND u.role <> 'ROLE_ADMIN';
+    """, nativeQuery = true)
     long countByGender(boolean gender);
 
     @Query(value = """
-    select count(u.*) from users u join user_info uf on u.id = uf.user_id 
-                      where uf.academic_title IS NOT NULL and uf.level IS NOT NULL
+    select count(u.*) from users u join academic_qualification aq on u.id = aq.user_id
+                      where aq.degree_level IS NOT NULL and aq.specialization IS NOT NULL
     """, nativeQuery = true)
     long countByAcademic();
 
@@ -93,7 +97,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) AS femaleCount,
         ROUND(SUM(CASE WHEN gender = true THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS malePercentage,
         ROUND(SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS femalePercentage
-    FROM users
+    FROM users u where u.role <> 'ROLE_ADMIN'
 """, nativeQuery = true)
     GenderStatsProjection getGenderStatistics();
 
@@ -114,7 +118,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) AS female_count,
             COUNT(*) AS total,
             ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 1) AS percentage
-        FROM users
+        FROM users where role <> 'ROLE_ADMIN'
         GROUP BY age_group
         ORDER BY MIN(age)
     """, nativeQuery = true)
@@ -127,7 +131,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = """
     select u.* from users u join department d on d.id = u.department_id join college c on d.college_id = c.id
-    join lavozm l on l.id = u.lavozm_id where
+    join lavozm l on l.id = u.lavozm_id where u.role <> 'ROLE_ADMIN'
     (:name IS NULL OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :name, '%'))) AND
     (:college IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :college, '%')) OR
      LOWER(c.name) LIKE LOWER(CONCAT('%', :college, '%'))) AND
@@ -137,5 +141,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
                              @Param("college") String college,
                              @Param("lavozim") String lavozim,
                              Pageable pageable);
-
 }
