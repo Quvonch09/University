@@ -58,10 +58,12 @@ public class UserService {
 
     
     
-    public ApiResponse<String> update(User user, UserDTO userDTO) {
+    public ApiResponse<String> update(User existingUser, UserDTO userDTO) {
 
-        User existingUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
+        if (userDTO.getId() == 0 || userDTO.getId() == null) {
+            existingUser = userRepository.findById(userDTO.getId())
+                    .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
+        }
 
         String oldPhone = existingUser.getPhone();
         existingUser.setPhone(userDTO.getPhone());
@@ -183,5 +185,17 @@ public class UserService {
                 .build();
 
         return ApiResponse.success(userStatisticsDto, "Success");
+    }
+
+
+
+    public ApiResponse<String> deleteTeacher(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new DataNotFoundException("User not found")
+        );
+
+        user.setEnabled(false);
+        userRepository.save(user);
+        return ApiResponse.success(null, "Success");
     }
 }
