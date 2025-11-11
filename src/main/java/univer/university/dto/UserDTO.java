@@ -10,7 +10,6 @@ import univer.university.dto.response.ResPageable;
 @NoArgsConstructor
 @Builder
 public class UserDTO {
-    @Schema(hidden = true)
     private Long id;
 
     private String fullName;

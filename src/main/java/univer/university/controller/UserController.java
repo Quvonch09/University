@@ -82,4 +82,10 @@ public class UserController {
 
 
 
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.deleteTeacher(userId));
+    }
+
+
 }
