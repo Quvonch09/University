@@ -46,7 +46,7 @@ public class UserService {
     }
 
     public ApiResponse<UserDTO> getById(Long id, int page, int size){
-        User user = userRepository.findById(id).orElseThrow(() -> new DataNotFoundException("User not found"));
+        User user = userRepository.findByIdAndEnabledTrue(id).orElseThrow(() -> new DataNotFoundException("User not found"));
         ResPageable award = awardService.getByUserId(id, page, size).getData();
         ResPageable research = tadqiqotService.getAllByUser(id, page, size).getData();
         ResPageable publication = publicationService.getByUserId(id, page, size).getData();
@@ -61,7 +61,7 @@ public class UserService {
     public ApiResponse<String> update(User existingUser, UserDTO userDTO) {
 
         if (userDTO.getId() == 0 || userDTO.getId() == null) {
-            existingUser = userRepository.findById(userDTO.getId())
+            existingUser = userRepository.findByIdAndEnabledTrue(userDTO.getId())
                     .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
         }
 
@@ -92,7 +92,7 @@ public class UserService {
 
 
     public ApiResponse<ResDashboard> getDashboard(){
-        long teacherCount = userRepository.countByRole(Role.ROLE_TEACHER);
+        long teacherCount = userRepository.countByRoleAndEnabledTrue(Role.ROLE_TEACHER.name());
         long maleCount = userRepository.countByGender(true);
         long feMaleCount = userRepository.countByGender(false);
         long countByAcademic = userRepository.countByAcademic();
