@@ -20,16 +20,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByPhoneAndRole(String phone, Role role);
 
+    Optional<User> findByIdAndEnabledTrue(Long id);
+
 
     @Query(value = """
     select count(u.*) from users u join department d on u.department_id = d.id
-        join college c on d.college_id = c.id where c.id = ?1 and c.active = true
+        join college c on d.college_id = c.id where c.id = ?1 and c.active = true and u.enabled = true
     """, nativeQuery = true)
     long countByCollege(Long collegeId);
 
 
     @Query(value = """
-    select count(u.*) from users u join department d on u.department_id = d.id where d.id = ?1 and d.active = true
+    select count(u.*) from users u join department d on u.department_id = d.id where d.id = ?1 and d.active = true and u.enabled = true
     """, nativeQuery = true)
     long countByDepartment(Long departmentId);
 
@@ -37,56 +39,59 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = """
     select count(u.*) from users u join department d on u.department_id = d.id 
         join college c on d.college_id = c.id join user_info uf on u.id = uf.user_id 
-        where c.id = ?1 and uf.academic_title = ?2 and c.active = true
+        where c.id = ?1 and uf.academic_title = ?2 and c.active = true and u.enabled = true
     """, nativeQuery = true)
     long countAcademicByCollege(Long collegeId, String academicTitle);
 
 
     @Query(value = """
     select count(u.*) from users u join user_info uf on u.id = uf.user_id join department d on u.department_id = d.id
-     where d.department_id = ?1 and uf.academic_title = ?2 and d.active = true
+     where d.department_id = ?1 and uf.academic_title = ?2 and d.active = true and u.enabled = true
     """, nativeQuery = true)
     long countAcademicByDepartment(Long departmentId, String academicTitle);
 
 
     @Query(value = """
     select count(u.*) from users u join department d on u.department_id = d.id join college c on d.college_id = c.id
-    join user_info uf on u.id = uf.user_id where c.id = ?1 and uf.level = ?2 and c.active = true
+    join user_info uf on u.id = uf.user_id where c.id = ?1 and uf.level = ?2 and c.active = true and u.enabled = true
     """, nativeQuery = true)
     long countLevelByCollege(Long collegeId, String level);
 
 
     @Query(value = """
     select count(u.*) from users u join user_info uf on u.id = uf.user_id join department d on d.id = u.department_id
-                      where d.department_id = ?1 and uf.level = ?2 and d.active = true
+                      where d.department_id = ?1 and uf.level = ?2 and d.active = true and u.enabled.true
     """, nativeQuery = true)
     long countLevelByDepartment(Long departmentId, String level);
 
 
     @Query(value = """
     select count(u.*) from users u join department d on u.department_id = d.id join college c on d.college_id = c.id
-    join user_info uf on u.id = uf.user_id where c.id = ?1 and uf.level IS NULL and uf.academic_title IS NULL
+    join user_info uf on u.id = uf.user_id where c.id = ?1 and uf.level IS NULL and uf.academic_title IS NULL and u.enabled = true
     """, nativeQuery = true)
     long countByCollegeNone(Long collegeId);
 
 
     @Query(value = """
     select count(u.*) from users u join user_info uf on u.id = uf.user_id 
-        where u.department_id = ?1 and uf.level IS NULL and uf.academic_title IS NULL
+        where u.department_id = ?1 and uf.level IS NULL and uf.academic_title IS NULL and u.enabled = true
     """, nativeQuery = true)
     long countByDepartmentNone(Long departmentId);
 
 
-    long countByRole(Role role);
+    @Query(value = """
+    select count(*) from users where role = ?1 and enabled = true
+    """, nativeQuery = true)
+    long countByRoleAndEnabledTrue(String role);
 
     @Query(value = """
-    select count(u.*) from users u where u.gender = ?1 AND u.role <> 'ROLE_ADMIN';
+    select count(u.*) from users u where u.gender = ?1 AND u.role <> 'ROLE_ADMIN' and u.enabled = true;
     """, nativeQuery = true)
     long countByGender(boolean gender);
 
     @Query(value = """
     select count(u.*) from users u join academic_qualification aq on u.id = aq.user_id
-                      where aq.degree_level IS NOT NULL and aq.specialization IS NOT NULL
+                      where aq.degree_level IS NOT NULL and aq.specialization IS NOT NULL and u.enabled = true
     """, nativeQuery = true)
     long countByAcademic();
 
@@ -97,7 +102,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) AS femaleCount,
         ROUND(SUM(CASE WHEN gender = true THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS malePercentage,
         ROUND(SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS femalePercentage
-    FROM users u where u.role <> 'ROLE_ADMIN'
+    FROM users u where u.role <> 'ROLE_ADMIN' and u.enabled = true
 """, nativeQuery = true)
     GenderStatsProjection getGenderStatistics();
 
@@ -118,7 +123,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             SUM(CASE WHEN gender = false THEN 1 ELSE 0 END) AS female_count,
             COUNT(*) AS total,
             ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM users), 1) AS percentage
-        FROM users where role <> 'ROLE_ADMIN'
+        FROM users where role <> 'ROLE_ADMIN' and enabled = true
         GROUP BY age_group
         ORDER BY MIN(age)
     """, nativeQuery = true)
@@ -131,7 +136,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = """
     select u.* from users u join department d on d.id = u.department_id join college c on d.college_id = c.id
-    join lavozm l on l.id = u.lavozm_id where u.role <> 'ROLE_ADMIN' and
+    join lavozm l on l.id = u.lavozm_id where u.role <> 'ROLE_ADMIN' and u.enabled = true and
     (:name IS NULL OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :name, '%'))) AND
     (:college IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :college, '%')) OR
      LOWER(c.name) LIKE LOWER(CONCAT('%', :college, '%'))) AND
