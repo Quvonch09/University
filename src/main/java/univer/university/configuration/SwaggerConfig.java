@@ -32,7 +32,7 @@ public class SwaggerConfig {
                                 .name("Apache 2.0")
                                 .url("https://springdoc.org")))
                 .servers(Arrays.asList(
-                        new Server().url("http://156.67.31.142:8080").description("Production server"),
+                        new Server().url("http://5.189.158.5:8080").description("Production server"),
                         new Server().url("https://qdtu.uz").description("Production server2"),
                         new Server().url("http://localhost:8080").description("Local server")
                 ))

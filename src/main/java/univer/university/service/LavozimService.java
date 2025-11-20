@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.response.ResLavozim;
+//import univer.university.dto.response.ResLavozimStatistics;
 import univer.university.entity.Lavozm;
 import univer.university.exception.DataNotFoundException;
 import univer.university.repository.LavozimRepository;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -66,4 +68,14 @@ public class LavozimService {
                 .name(lavozm.getName())
                 .build();
     }
+
+
+//    public ApiResponse<ResLavozimStatistics> getLavozimStatistics(){
+//
+//        List<Map<String, Object>> lavozmStats = lavozimRepository.getLavozmStats();
+//
+//
+//        return ApiResponse.success("success",);
+//
+//    }
 }
