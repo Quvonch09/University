@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 public class ResUser {
     private Long id;
-    private String name;
+    private String fullName;
     private String lavozim;
     private String email;
     private String imgUrl;

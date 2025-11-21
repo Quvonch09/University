@@ -22,6 +22,10 @@ public class UserDTO {
 
     private String input;
 
+    private int age;
+
+    private boolean gender;
+
     private String imageUrl;
 
     @Schema(hidden = true)
