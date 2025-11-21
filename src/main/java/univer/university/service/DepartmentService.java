@@ -73,15 +73,15 @@ public class DepartmentService {
     }
 
 
-    public ApiResponse<List<ReqDepartment>> getDepartmentByCollege(Long collegeId){
-        College college = collageRepository.findByIdAndActiveTrue(collegeId).orElseThrow(
-                () -> new DataNotFoundException("College not found")
-        );
-
-        List<Department> departments = departmentRepository.findAllByCollegeIdAndActiveTrue(college.getId());
-        List<ReqDepartment> list = departments.stream().map(departmentMapper::toDTO).toList();
-        return ApiResponse.success(list, "department list successfully");
-    }
+//    public ApiResponse<List<ReqDepartment>> getDepartmentByCollege(Long collegeId){
+//        College college = collageRepository.findByIdAndActiveTrue(collegeId).orElseThrow(
+//                () -> new DataNotFoundException("College not found")
+//        );
+//
+//        List<Department> departments = departmentRepository.findAllByCollegeIdAndActiveTrue(college.getId());
+//        List<ReqDepartment> list = departments.stream().map(departmentMapper::toDTO).toList();
+//        return ApiResponse.success(list, "department list successfully");
+//    }
 
 
     public ApiResponse<DepartmentDTO> getOneDepartment(Long id){
@@ -130,5 +130,13 @@ public class DepartmentService {
                 .body(departmentList)
                 .build();
         return ApiResponse.success(resPageable, "department list successfully");
+    }
+
+
+
+
+    public ApiResponse<List<ReqDepartment>> getAllDepartmentList(){
+        List<ReqDepartment> departments = departmentRepository.findAll().stream().map(departmentMapper::toDTO).toList();
+        return ApiResponse.success(departments, "department list successfully");
     }
 }

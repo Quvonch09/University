@@ -59,4 +59,10 @@ public class DepartmentController {
     public ResponseEntity<ApiResponse<DepartmentDTO>> getDepartment(@PathVariable Long departmentId) {
         return ResponseEntity.ok(departmentService.getOneDepartment(departmentId));
     }
+
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<List<ReqDepartment>>> getDepartments() {
+        return ResponseEntity.ok(departmentService.getAllDepartmentList());
+    }
 }
