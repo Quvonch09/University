@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.response.ResLavozim;
 //import univer.university.dto.response.ResLavozimStatistics;
+import univer.university.dto.response.ResLavozimStatistics;
 import univer.university.entity.Lavozm;
 import univer.university.exception.DataNotFoundException;
 import univer.university.repository.LavozimRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,12 +72,23 @@ public class LavozimService {
     }
 
 
-//    public ApiResponse<ResLavozimStatistics> getLavozimStatistics(){
-//
-//        List<Map<String, Object>> lavozmStats = lavozimRepository.getLavozmStats();
-//
-//
-//        return ApiResponse.success("success",);
-//
-//    }
+    public ApiResponse<Map<String, Object>> getLavozimStatistics(){
+
+        List<Object[]> rows = lavozimRepository.getLavozimStats();
+
+        List<ResLavozimStatistics> list = rows.stream()
+                .map(r -> new ResLavozimStatistics(
+                        (String) r[0],
+                        ((Number) r[1]).intValue()
+                ))
+                .toList();
+
+        Long total = list.stream().mapToLong(ResLavozimStatistics::getTotalEmployees).sum();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("total", total);
+        response.put("data", list);
+
+        return ApiResponse.success(response, "Success");
+    }
 }

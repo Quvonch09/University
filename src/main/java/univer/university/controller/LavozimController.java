@@ -5,9 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.response.ResLavozim;
+import univer.university.dto.response.ResLavozimStatistics;
 import univer.university.service.LavozimService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/lavozim")
@@ -38,5 +40,10 @@ public class LavozimController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteLavozim(@PathVariable Long id){
         return ResponseEntity.ok(lavozimService.deleteLavozim(id));
+    }
+
+    @GetMapping("/get-lavozim-statistiks")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getAllLavozim(){
+        return ResponseEntity.ok(lavozimService.getLavozimStatistics());
     }
 }
