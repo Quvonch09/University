@@ -52,7 +52,7 @@ public class CloudService {
         ResponseEntity<String> response = restTemplate.exchange(uploadUrl, HttpMethod.POST, entity, String.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
-            return ApiResponse.success(null,supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + filePath);
+            return ApiResponse.success(supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + filePath, "Success");
         } else {
             throw new BadRequestException("Fayl yuklashda xatolik: " + response.getStatusCode());
         }

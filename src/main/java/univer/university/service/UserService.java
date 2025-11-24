@@ -60,30 +60,36 @@ public class UserService {
     
     public ApiResponse<String> update(User existingUser, UserDTO userDTO) {
 
-        if (userDTO.getId() == 0 || userDTO.getId() == null) {
-            existingUser = userRepository.findByIdAndEnabledTrue(userDTO.getId())
-                    .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
-        }
+        existingUser = userRepository.findByIdAndEnabledTrue(userDTO.getId())
+                .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
 
+        // Eski telefonni saqlab olamiz
         String oldPhone = existingUser.getPhone();
+
+        // Maʼlumotlarni yangilaymiz
         existingUser.setPhone(userDTO.getPhone());
         existingUser.setFullName(userDTO.getFullName());
         existingUser.setEmail(userDTO.getEmail());
         existingUser.setImgUrl(userDTO.getImageUrl());
+
         User savedUser = userRepository.save(existingUser);
 
+        // Telefon o‘zgarganmi?
+        boolean phoneChanged = !Objects.equals(userDTO.getPhone(), oldPhone);
+
         String token = null;
-        boolean phoneChanged = !Objects.equals(userDTO.getPhone(),oldPhone);
 
         if (phoneChanged) {
+            // ❗ Telefon o‘zgargan bo‘lsa → yangi token generatsiya qilinadi
             token = jwtService.generateToken(savedUser.getPhone(), savedUser.getRole().name());
         } else {
+            // ❗ Eski token qaytariladi (agar bor bo‘lsa)
             String authHeader = request.getHeader("Authorization");
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
-            } else {
-                token = jwtService.generateToken(savedUser.getPhone(), savedUser.getRole().name());
             }
+            // Istasangiz token qaytarmasdan bo‘sh qoldirishingiz mumkin:
+            // token = null;
         }
 
         return ApiResponse.success(token, "Success");

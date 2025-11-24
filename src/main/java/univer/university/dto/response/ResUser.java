@@ -12,6 +12,9 @@ public class ResUser {
     private String fullName;
     private String lavozim;
     private String email;
+    private int age;
+    private boolean gender;
+    private String profession;
     private String imgUrl;
     private String input;
     private String phoneNumber;
