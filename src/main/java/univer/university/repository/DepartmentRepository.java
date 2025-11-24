@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
     List<Department> findAllByCollegeIdAndActiveTrue(Long collegeId);
     Optional<Department> findByIdAndActiveTrue(Long id);
+    List<Department> findAllByActiveTrue();
 
 
     @Query(value = """
