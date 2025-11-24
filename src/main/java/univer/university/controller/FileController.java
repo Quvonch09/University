@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import univer.university.dto.ApiResponse;
 import univer.university.service.CloudService;
 
 import java.io.IOException;
@@ -21,13 +22,13 @@ public class FileController {
     private final CloudService cloudService;
 
     @PostMapping(value = "/pdf", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ApiResponse<String>> upload(@RequestParam("file") MultipartFile file) {
         try {
-            String fileUrlFuture = cloudService.uploadFile(file, file.getOriginalFilename());
+            ApiResponse fileUrlFuture = cloudService.uploadFile(file, file.getOriginalFilename());
             return ResponseEntity.ok(fileUrlFuture);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Xatolik: " + e.getMessage());
+                    .body(ApiResponse.error(e.getMessage()));
         }
     }
 
