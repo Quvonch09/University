@@ -136,7 +136,7 @@ public class DepartmentService {
 
 
     public ApiResponse<List<ReqDepartment>> getAllDepartmentList(){
-        List<ReqDepartment> departments = departmentRepository.findAll().stream().map(departmentMapper::toDTO).toList();
+        List<ReqDepartment> departments = departmentRepository.findAllByActiveTrue().stream().map(departmentMapper::toDTO).toList();
         return ApiResponse.success(departments, "department list successfully");
     }
 }

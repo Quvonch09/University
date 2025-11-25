@@ -11,6 +11,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import univer.university.dto.ApiResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -36,7 +37,7 @@ public class CloudService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    public String uploadFile(MultipartFile file, String fileName) throws IOException {
+    public ApiResponse<String> uploadFile(MultipartFile file, String fileName) throws IOException {
         String uniqueName = LocalDateTime.now() + "_" + fileName;
         String filePath = "uploads/" + uniqueName;
 
@@ -51,7 +52,7 @@ public class CloudService {
         ResponseEntity<String> response = restTemplate.exchange(uploadUrl, HttpMethod.POST, entity, String.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
-            return supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + filePath;
+            return ApiResponse.success(supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + filePath, "Success");
         } else {
             throw new BadRequestException("Fayl yuklashda xatolik: " + response.getStatusCode());
         }
