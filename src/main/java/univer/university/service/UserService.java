@@ -60,33 +60,31 @@ public class UserService {
     
     public ApiResponse<String> update(User existingUser, UserDTO userDTO) {
 
-        if (userDTO.getId() == 0 || userDTO.getId() == null) {
-            existingUser = userRepository.findByIdAndEnabledTrue(userDTO.getId())
-                    .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
-        }
+        existingUser = userRepository.findByIdAndEnabledTrue(userDTO.getId())
+                .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
 
         String oldPhone = existingUser.getPhone();
+        String newPhone = userDTO.getPhone();
+
+        if (newPhone == null || newPhone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Telefon raqami bo‘sh bo‘lishi mumkin emas!");
+        }
         existingUser.setPhone(userDTO.getPhone());
         existingUser.setFullName(userDTO.getFullName());
         existingUser.setEmail(userDTO.getEmail());
         existingUser.setImgUrl(userDTO.getImageUrl());
         User savedUser = userRepository.save(existingUser);
 
-        String token = null;
-        boolean phoneChanged = !Objects.equals(userDTO.getPhone(),oldPhone);
+        boolean phoneChanged = !Objects.equals(userDTO.getPhone(), oldPhone);
+
+        String token;
 
         if (phoneChanged) {
             token = jwtService.generateToken(savedUser.getPhone(), savedUser.getRole().name());
-        } else {
-            String authHeader = request.getHeader("Authorization");
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                token = authHeader.substring(7);
-            } else {
-                token = jwtService.generateToken(savedUser.getPhone(), savedUser.getRole().name());
-            }
+            return ApiResponse.success(token, "success");
         }
 
-        return ApiResponse.success(token, "Success");
+        return ApiResponse.success(null, "Success");
     }
 
 
