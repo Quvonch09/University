@@ -64,11 +64,11 @@ public class UserService {
                 .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
 
         String oldPhone = existingUser.getPhone();
-        String newPhone = userDTO.getPhone();
+        //String newPhone = userDTO.getPhone();
 
-        if (newPhone == null || newPhone.trim().isEmpty()) {
-            throw new IllegalArgumentException("Telefon raqami bo‘sh bo‘lishi mumkin emas!");
-        }
+//        if (newPhone == null || newPhone.trim().isEmpty()) {
+//            throw new IllegalArgumentException("Telefon raqami bo‘sh bo‘lishi mumkin emas!");
+//        }
         existingUser.setPhone(userDTO.getPhone());
         existingUser.setFullName(userDTO.getFullName());
         existingUser.setEmail(userDTO.getEmail());
