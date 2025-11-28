@@ -31,8 +31,8 @@ public class UserController {
 
 
     @PutMapping
-    public ResponseEntity<ApiResponse<String>> update(@AuthenticationPrincipal User user, @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok(userService.update(user, userDTO));
+    public ResponseEntity<ApiResponse<String>> update(@AuthenticationPrincipal User user, @RequestBody ReqUserDTO reqUserDto){
+        return ResponseEntity.ok(userService.update(user, reqUserDto));
     }
 
 
