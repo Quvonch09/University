@@ -8,10 +8,7 @@ import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
 import univer.university.dto.UserStatisticsDto;
 import univer.university.dto.request.ReqUserDTO;
-import univer.university.dto.response.AgeGenderStatsProjection;
-import univer.university.dto.response.GenderStatsProjection;
-import univer.university.dto.response.ResDashboard;
-import univer.university.dto.response.ResPageable;
+import univer.university.dto.response.*;
 import univer.university.entity.User;
 import univer.university.service.UserService;
 
@@ -41,6 +38,17 @@ public class UserController {
         return ResponseEntity.ok(userService.getDashboard());
     }
 
+
+    @GetMapping("/college/{collegeId}")
+    public ResponseEntity<ApiResponse<List<ResUser>>> getUsersByCollege(@PathVariable Long collegeId){
+        return ResponseEntity.ok(userService.getUsersCollegeId(collegeId));
+    }
+
+
+    @GetMapping("/department/{departmentId}")
+    public ResponseEntity<ApiResponse<List<ResUser>>> getUserByDepartment(@PathVariable Long departmentId){
+        return ResponseEntity.ok(userService.getUsersDepartmentId(departmentId));
+    }
 
     @GetMapping("/gender-dashboard")
     public ResponseEntity<ApiResponse<GenderStatsProjection>> getGenderDashboard(){

@@ -10,6 +10,7 @@ import univer.university.dto.UserDTO;
 import univer.university.dto.UserStatisticsDto;
 import univer.university.dto.request.ReqUserDTO;
 import univer.university.dto.response.*;
+import univer.university.entity.College;
 import univer.university.entity.Department;
 import univer.university.entity.Lavozm;
 import univer.university.entity.User;
@@ -45,6 +46,7 @@ public class UserService {
     private final AwardRepository awardRepository;
     private final DepartmentRepository departmentRepository;
     private final LavozimRepository lavozimRepository;
+    private final CollageRepository collageRepository;
 
     public ApiResponse<UserDTO> getMe(User user){
         return ApiResponse.success(userMapper.userDTO(user), "Success");
@@ -148,6 +150,27 @@ public class UserService {
                 .build();
 
         return ApiResponse.success(resPageable, "Success");
+    }
+
+
+    public ApiResponse<List<ResUser>> getUsersDepartmentId(Long departmentId){
+        Department department = departmentRepository.findByIdAndActiveTrue(departmentId).orElseThrow(
+                () -> new DataNotFoundException("Department not found")
+        );
+
+        List<ResUser> list = userRepository.findAllByDepartmentId(departmentId).stream().map(userMapper::resUser).toList();
+        return ApiResponse.success(list, "Success");
+    }
+
+
+
+    public ApiResponse<List<ResUser>> getUsersCollegeId(Long collegeId){
+        College college = collageRepository.findByIdAndActiveTrue(collegeId).orElseThrow(
+                () -> new DataNotFoundException("College not found")
+        );
+
+        List<ResUser> list = userRepository.findAllByCollegeId(college.getId()).stream().map(userMapper::resUser).toList();
+        return ApiResponse.success(list, "Success");
     }
 
 

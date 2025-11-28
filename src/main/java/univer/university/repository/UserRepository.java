@@ -22,6 +22,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByIdAndEnabledTrue(Long id);
 
+    List<User> findAllByDepartmentId(Long departmentId);
+
+
+    @Query(value = """
+    select u.* from users u join department d on d.id = u.department_id join college c on c.id = d.college_id where c.id = ?1
+    """, nativeQuery = true)
+    List<User> findAllByCollegeId(Long collegeId);
+
 
     @Query(value = """
     select count(u.*) from users u join department d on u.department_id = d.id
@@ -46,7 +54,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = """
     select count(u.*) from users u join user_info uf on u.id = uf.user_id join department d on u.department_id = d.id
-     where d.department_id = ?1 and uf.academic_title = ?2 and d.active = true and u.enabled = true
+     where d.id = ?1 and uf.academic_title = ?2 and d.active = true and u.enabled = true
     """, nativeQuery = true)
     long countAcademicByDepartment(Long departmentId, String academicTitle);
 
@@ -60,7 +68,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = """
     select count(u.*) from users u join user_info uf on u.id = uf.user_id join department d on d.id = u.department_id
-                      where d.department_id = ?1 and uf.level = ?2 and d.active = true and u.enabled.true
+                      where d.id = ?1 and uf.level = ?2 and d.active = true and u.enabled = true
     """, nativeQuery = true)
     long countLevelByDepartment(Long departmentId, String level);
 
@@ -73,7 +81,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     @Query(value = """
-    select count(u.*) from users u join user_info uf on u.id = uf.user_id 
+    select count(u.*) from users u join user_info uf on u.id = uf.user_id
         where u.department_id = ?1 and uf.level IS NULL and uf.academic_title IS NULL and u.enabled = true
     """, nativeQuery = true)
     long countByDepartmentNone(Long departmentId);
