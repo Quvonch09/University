@@ -9,10 +9,30 @@ import java.util.List;
 @Getter
 @Setter
 public class ReqUserDTO {
+    private Long id;
+
     private String fullName;
-    private String phone;
+
+    private String phoneNumber;
+
     private String email;
+
+    private String biography;
+
+    private String input;
+
+    private int age;
+
+    private boolean gender;
+
     private String imageUrl;
-    private List<Object> infos;
-    private Long categoryId;
+
+    private String fileUrl;
+
+    private String profession;
+
+    private Long lavozmId;
+
+    private Long departmentId;
+
 }

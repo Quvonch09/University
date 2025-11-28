@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
 import univer.university.dto.UserStatisticsDto;
+import univer.university.dto.request.ReqUserDTO;
 import univer.university.dto.response.*;
+import univer.university.entity.Department;
+import univer.university.entity.Lavozm;
 import univer.university.entity.User;
 import univer.university.entity.enums.AwardEnum;
 import univer.university.entity.enums.PublicTypeEnum;
@@ -40,6 +43,8 @@ public class UserService {
     private final NazoratRepository nazoratRepository;
     private final ConsultationRepository consultationRepository;
     private final AwardRepository awardRepository;
+    private final DepartmentRepository departmentRepository;
+    private final LavozimRepository lavozimRepository;
 
     public ApiResponse<UserDTO> getMe(User user){
         return ApiResponse.success(userMapper.userDTO(user), "Success");
@@ -56,34 +61,40 @@ public class UserService {
         return ApiResponse.success(userMapper.userToDTO(user,qualification,research,award,consultation,nazorat,publication), "Success");
     }
 
-    
-    
-    public ApiResponse<String> update(User existingUser, UserDTO userDTO) {
 
-        existingUser = userRepository.findByIdAndEnabledTrue(userDTO.getId())
-                .orElseThrow(() -> new DataNotFoundException("User topilmadi"));
+    public ApiResponse<String> update(User existingUser, ReqUserDTO reqUserDTO) {
 
-        String oldPhone = existingUser.getPhone();
-        //String newPhone = userDTO.getPhone();
-
-//        if (newPhone == null || newPhone.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Telefon raqami bo‘sh bo‘lishi mumkin emas!");
-//        }
-        existingUser.setPhone(userDTO.getPhone());
-        existingUser.setFullName(userDTO.getFullName());
-        existingUser.setEmail(userDTO.getEmail());
-        existingUser.setImgUrl(userDTO.getImageUrl());
-        User savedUser = userRepository.save(existingUser);
-
-        boolean phoneChanged = !Objects.equals(userDTO.getPhone(), oldPhone);
-
-        String token;
-
-        if (phoneChanged) {
-            token = jwtService.generateToken(savedUser.getPhone(), savedUser.getRole().name());
-            return ApiResponse.success(token, "success");
+        if(reqUserDTO.getId() !=0 || reqUserDTO.getId() != null){
+            existingUser = userRepository.findByIdAndEnabledTrue(reqUserDTO.getId()).orElseThrow(
+                    () -> new DataNotFoundException("User not found")
+            );
         }
 
+        Lavozm lavozm = lavozimRepository.findById(reqUserDTO.getLavozmId()).orElseThrow(
+                () -> new DataNotFoundException("Lavozm not found")
+        );
+
+
+        Department department = departmentRepository.findByIdAndActiveTrue(reqUserDTO.getDepartmentId()).orElseThrow(
+                () -> new DataNotFoundException("Department not found")
+        );
+
+
+        existingUser.setFullName(reqUserDTO.getFullName());
+        existingUser.setEmail(reqUserDTO.getEmail());
+        existingUser.setImgUrl(reqUserDTO.getImageUrl());
+        existingUser.setAge(reqUserDTO.getAge());
+        existingUser.setBiography(reqUserDTO.getBiography());
+        existingUser.setGender(reqUserDTO.isGender());
+        existingUser.setLavozm(lavozm);
+        existingUser.setDepartment(department);
+        existingUser.setProfession(reqUserDTO.getProfession());
+        existingUser.setInput(reqUserDTO.getInput());
+        if (!existingUser.getPhone().equals(reqUserDTO.getPhoneNumber())){
+            existingUser.setPhone(reqUserDTO.getPhoneNumber());
+        }
+
+        userRepository.save(existingUser);
         return ApiResponse.success(null, "Success");
     }
 
