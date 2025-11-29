@@ -22,11 +22,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByIdAndEnabledTrue(Long id);
 
-    List<User> findAllByDepartmentId(Long departmentId);
+    List<User> findAllByDepartmentIdAndEnabledTrue(Long departmentId);
 
 
     @Query(value = """
-    select u.* from users u join department d on d.id = u.department_id join college c on c.id = d.college_id where c.id = ?1
+    select u.* from users u join department d on d.id = u.department_id 
+        join college c on c.id = d.college_id where c.id = ?1 and u.enabled = true
     """, nativeQuery = true)
     List<User> findAllByCollegeId(Long collegeId);
 
