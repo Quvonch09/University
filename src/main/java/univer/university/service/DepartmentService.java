@@ -10,6 +10,7 @@ import univer.university.dto.request.ReqDepartment;
 import univer.university.dto.response.ResPageable;
 import univer.university.entity.College;
 import univer.university.entity.Department;
+import univer.university.entity.User;
 import univer.university.entity.enums.AcademicTitle;
 import univer.university.entity.enums.Level;
 import univer.university.exception.DataNotFoundException;
@@ -66,6 +67,12 @@ public class DepartmentService {
         Department department = departmentRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Department not found")
         );
+
+        List<User> users = userRepository.findAllByDepartmentIdAndEnabledTrue(department.getId());
+        for (User user : users) {
+            user.setEnabled(false);
+            userRepository.save(user);
+        }
 
         department.setActive(false);
         departmentRepository.save(department);

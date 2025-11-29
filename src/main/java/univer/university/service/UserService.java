@@ -158,7 +158,7 @@ public class UserService {
                 () -> new DataNotFoundException("Department not found")
         );
 
-        List<ResUser> list = userRepository.findAllByDepartmentId(departmentId).stream().map(userMapper::resUser).toList();
+        List<ResUser> list = userRepository.findAllByDepartmentIdAndEnabledTrue(department.getId()).stream().map(userMapper::resUser).toList();
         return ApiResponse.success(list, "Success");
     }
 
