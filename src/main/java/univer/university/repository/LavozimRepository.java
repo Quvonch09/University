@@ -17,11 +17,11 @@ public interface LavozimRepository extends JpaRepository<Lavozm, Long> {
     @Query(
             value = """
                     SELECT l.name AS name,
-                           COUNT(u.id) AS count
-                    FROM lavozm l
-                    LEFT JOIN users u ON u.lavozm_id = l.id
-                    GROUP BY l.name
-                    ORDER BY count DESC
+                                              COUNT(u.id) AS count
+                                       FROM lavozm l
+                                                LEFT JOIN users u ON u.lavozm_id = l.id where u.enabled = true
+                                       GROUP BY l.name
+                                       ORDER BY count DESC
                     """,
             nativeQuery = true
     )

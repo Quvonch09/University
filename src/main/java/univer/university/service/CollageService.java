@@ -122,9 +122,9 @@ public class CollageService {
         long countAllUsers = userRepository.countByCollege(college.getId());
         long countPHD = userRepository.countLevelByCollege(college.getId(), Level.FAN_NOMZODI_PhD.name());
         long countDSC = userRepository.countLevelByCollege(college.getId(), Level.FAN_DOKTORI_DSc.name());
-        long countProfessor = userRepository.countAcademicByCollege(college.getId(), AcademicTitle.PROFESSOR.name());
-        long countDotsent = userRepository.countAcademicByCollege(college.getId(), AcademicTitle.DOTSENT.name());
-        long countNull = userRepository.countByCollegeNone(college.getId());
+        long countProfessor = userRepository.countAcademicByCollege(college.getId(), "Professor");
+        long countDotsent = userRepository.countAcademicByCollege(college.getId(), "Dotsent");
+        long countNull = userRepository.countNoAcademicByCollege(college.getId());
 
         List<ResDepartment> departmentList = departmentRepository.findAllByCollegeIdAndActiveTrue(college.getId())
                 .stream().map(departmentMapper::toResDTO).toList();
