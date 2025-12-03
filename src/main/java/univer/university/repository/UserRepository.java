@@ -25,82 +25,139 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByDepartmentIdAndEnabledTrue(Long departmentId);
 
 
+    // 1. College bo‘yicha userlarni olish (o‘zgarmagan)
     @Query(value = """
-    select u.* from users u join department d on d.id = u.department_id 
-        join college c on c.id = d.college_id where c.id = ?1 and u.enabled = true
+    select u.* from users u 
+    join department d on d.id = u.department_id 
+    join college c on c.id = d.college_id 
+    where c.id = ?1 and u.enabled = true
     """, nativeQuery = true)
     List<User> findAllByCollegeId(Long collegeId);
 
 
+    // 2. College bo‘yicha userlar soni (o‘zgarmagan)
     @Query(value = """
-    select count(u.*) from users u join department d on u.department_id = d.id
-        join college c on d.college_id = c.id where c.id = ?1 and c.active = true and u.enabled = true
+    select count(u.*) from users u 
+    join department d on u.department_id = d.id
+    join college c on d.college_id = c.id 
+    where c.id = ?1 and c.active = true and u.enabled = true
     """, nativeQuery = true)
     long countByCollege(Long collegeId);
 
 
+    // 3. Department bo‘yicha userlar soni (o‘zgarmagan)
     @Query(value = """
-    select count(u.*) from users u join department d on u.department_id = d.id where d.id = ?1 and d.active = true and u.enabled = true
+    select count(u.*) from users u 
+    join department d on u.department_id = d.id 
+    where d.id = ?1 and d.active = true and u.enabled = true
     """, nativeQuery = true)
     long countByDepartment(Long departmentId);
 
 
+    // 4. College bo‘yicha ilmiy daraja hisoblash (academic_qualification bilan)
     @Query(value = """
-    select count(u.*) from users u join department d on u.department_id = d.id 
-        join college c on d.college_id = c.id join user_info uf on u.id = uf.user_id 
-        where c.id = ?1 and uf.academic_title = ?2 and c.active = true and u.enabled = true
+    select count(u.id) 
+    from users u
+    join department d on d.id = u.department_id
+    join college c on c.id = d.college_id
+    join lavozm l on l.id = u.lavozm_id
+    where c.id = ?1 
+      and lower(l.name) = lower(?2)
+      and u.enabled = true
     """, nativeQuery = true)
     long countAcademicByCollege(Long collegeId, String academicTitle);
 
 
-    @Query(value = """
-    select count(u.*) from users u join user_info uf on u.id = uf.user_id join department d on u.department_id = d.id
-     where d.id = ?1 and uf.academic_title = ?2 and d.active = true and u.enabled = true
+    // 5. Department bo‘yicha ilmiy daraja hisoblash (academic_qualification bilan)
+    @Query( value = """
+    select count(u.id)
+    from users u
+    join lavozm l on l.id = u.lavozm_id
+    where u.department_id = ?1
+      and lower(l.name) = lower(?2)
+      and u.enabled = true
     """, nativeQuery = true)
     long countAcademicByDepartment(Long departmentId, String academicTitle);
 
 
+    // 6. College bo‘yicha level hisoblash (level academic_qualification.degree_level deb olinmoqda)
     @Query(value = """
-    select count(u.*) from users u join department d on u.department_id = d.id join college c on d.college_id = c.id
-    join user_info uf on u.id = uf.user_id where c.id = ?1 and uf.level = ?2 and c.active = true and u.enabled = true
+    select count(distinct u.id) from users u
+    join department d on u.department_id = d.id
+    join college c on d.college_id = c.id
+    join academic_qualification aq on u.id = aq.user_id
+    where c.id = ?1 
+      and aq.degree_level = ?2
+      and c.active = true 
+      and u.enabled = true
     """, nativeQuery = true)
     long countLevelByCollege(Long collegeId, String level);
 
 
+    // 7. Department bo‘yicha level hisoblash (academic_qualification orqali)
     @Query(value = """
-    select count(u.*) from users u join user_info uf on u.id = uf.user_id join department d on d.id = u.department_id
-                      where d.id = ?1 and uf.level = ?2 and d.active = true and u.enabled = true
+    select count(distinct u.id) from users u
+    join academic_qualification aq on u.id = aq.user_id
+    join department d on d.id = u.department_id
+    where d.id = ?1 
+      and aq.degree_level = ?2
+      and d.active = true 
+      and u.enabled = true
     """, nativeQuery = true)
     long countLevelByDepartment(Long departmentId, String level);
 
 
-    @Query(value = """
-    select count(u.*) from users u join department d on u.department_id = d.id join college c on d.college_id = c.id
-    join user_info uf on u.id = uf.user_id where c.id = ?1 and uf.level IS NULL and uf.academic_title IS NULL and u.enabled = true
+    // 8. College bo‘yicha ilmiy ma’lumotlari yo‘q userlar (NONE)
+    @Query( value = """
+    select count(u.id)
+    from users u
+    left join academic_qualification aq on aq.user_id = u.id
+    join department d on d.id = u.department_id
+    join college c on c.id = d.college_id
+    where c.id = ?1
+      and aq.id is null
+      and u.enabled = true
     """, nativeQuery = true)
-    long countByCollegeNone(Long collegeId);
+    long countNoAcademicByCollege(Long collegeId);
 
 
+
+    // 9. Department bo‘yicha ilmiy ma’lumoti yo‘q userlar
     @Query(value = """
-    select count(u.*) from users u join user_info uf on u.id = uf.user_id
-        where u.department_id = ?1 and uf.level IS NULL and uf.academic_title IS NULL and u.enabled = true
+    select count(u.id) from users u
+    left join academic_qualification aq on u.id = aq.user_id
+    where u.department_id = ?1 
+      and aq.id is null 
+      and u.enabled = true
     """, nativeQuery = true)
     long countByDepartmentNone(Long departmentId);
 
 
+    // 10. Role bo‘yicha sanash (o‘zgarmagan)
     @Query(value = """
-    select count(*) from users where role = ?1 and enabled = true
+    select count(*) from users 
+    where role = ?1 and enabled = true
     """, nativeQuery = true)
     long countByRoleAndEnabledTrue(String role);
 
+
+    // 11. Gender bo‘yicha sanash (o‘zgarmagan)
     @Query(value = """
-    select count(u.*) from users u where u.gender = ?1 AND u.role <> 'ROLE_ADMIN' and u.enabled = true;
+    select count(u.*) from users u 
+    where u.gender = ?1 
+      and u.role <> 'ROLE_ADMIN' 
+      and u.enabled = true
     """, nativeQuery = true)
     long countByGender(boolean gender);
 
+
+    // 12. Academic qualification bor userlar soni (o‘zgarmagan)
     @Query(value = """
-    select count(u.*) from users u join academic_qualification aq on u.id = aq.user_id
-                      where aq.degree_level IS NOT NULL and aq.specialization IS NOT NULL and u.enabled = true
+    select count(distinct u.id) from users u 
+    join academic_qualification aq on u.id = aq.user_id
+    where aq.degree_level IS NOT NULL 
+      and aq.specialization IS NOT NULL 
+      and u.enabled = true
     """, nativeQuery = true)
     long countByAcademic();
 

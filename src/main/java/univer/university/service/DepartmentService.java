@@ -99,13 +99,14 @@ public class DepartmentService {
         long countAllUsers = userRepository.countByDepartment(department.getId());
         long countPHD = userRepository.countLevelByDepartment(department.getId(), Level.FAN_NOMZODI_PhD.name());
         long countDSC = userRepository.countLevelByDepartment(department.getId(), Level.FAN_DOKTORI_DSc.name());
-        long countProfessor = userRepository.countAcademicByDepartment(department.getId(), AcademicTitle.PROFESSOR.name());
-        long countDotsent = userRepository.countAcademicByDepartment(department.getId(), AcademicTitle.DOTSENT.name());
+        long countProfessor = userRepository.countAcademicByDepartment(department.getId(), "Professor");
+        long countDotsent = userRepository.countAcademicByDepartment(department.getId(), "Dotsent");
         long countNull = userRepository.countByDepartmentNone(department.getId());
 
 
         DepartmentDTO departmentDTO = DepartmentDTO.builder()
                 .id(department.getId())
+                .imgUrl(department.getImgUrl())
                 .name(department.getName())
                 .countUsers(countAllUsers)
                 .countPHD(countPHD)
