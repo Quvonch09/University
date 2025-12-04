@@ -89,6 +89,7 @@ public class UserService {
         existingUser.setBiography(reqUserDTO.getBiography());
         existingUser.setGender(reqUserDTO.isGender());
         existingUser.setLavozm(lavozm);
+        existingUser.setFileUrl(reqUserDTO.getFileUrl());
         existingUser.setDepartment(department);
         existingUser.setProfession(reqUserDTO.getProfession());
         existingUser.setInput(reqUserDTO.getInput());
