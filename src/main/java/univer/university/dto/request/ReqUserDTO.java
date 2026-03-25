@@ -21,9 +21,17 @@ public class ReqUserDTO {
 
     private String input;
 
-    private int age;
+    private Integer age;
 
-    private boolean gender;
+    private String orcId;
+
+    private String scopusId;
+
+    private String scienceId;
+
+    private String researcherId;
+
+    private Boolean gender;
 
     private String imageUrl;
 

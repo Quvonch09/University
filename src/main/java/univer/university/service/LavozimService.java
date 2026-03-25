@@ -9,6 +9,7 @@ import univer.university.dto.response.ResLavozimStatistics;
 import univer.university.entity.Lavozm;
 import univer.university.exception.DataNotFoundException;
 import univer.university.repository.LavozimRepository;
+import univer.university.repository.UserRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class LavozimService {
     private final LavozimRepository lavozimRepository;
+    private final UserRepository userRepository;
 
     public ApiResponse<String> saveLavozim(ResLavozim resLavozim){
         boolean b = lavozimRepository.existsByName(resLavozim.getName());
@@ -52,6 +54,12 @@ public class LavozimService {
         Lavozm lavozm = lavozimRepository.findById(id).orElseThrow(
                 () -> new DataNotFoundException("Lavozim not found")
         );
+
+        boolean exists = userRepository.existsByLavozm_Id(lavozm.getId());
+        if (exists){
+            return ApiResponse.error("O'chirish mumkinmas");
+        }
+
         lavozimRepository.delete(lavozm);
         return ApiResponse.success(null, "Success");
     }

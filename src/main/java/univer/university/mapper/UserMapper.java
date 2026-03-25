@@ -67,6 +67,10 @@ public class UserMapper {
                 .fileUrl(user.getFileUrl())
                 .profession(user.getProfession())
                 .qualification(qualification)
+                .orcId(user.getOrcId())
+                .researcherId(user.getResearcherId())
+                .scienceId(user.getScienceId())
+                .scopusId(user.getScopusId())
                 .build();
     }
 

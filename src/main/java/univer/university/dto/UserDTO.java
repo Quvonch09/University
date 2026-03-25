@@ -26,6 +26,14 @@ public class UserDTO {
 
     private boolean gender;
 
+    private String orcId;
+
+    private String scopusId;
+
+    private String scienceId;
+
+    private String researcherId;
+
     private String imageUrl;
 
     @Schema(hidden = true)
