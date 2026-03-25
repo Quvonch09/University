@@ -3,7 +3,6 @@ package univer.university.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.CollegeDTO;
@@ -14,7 +13,6 @@ import univer.university.dto.response.ResDepartment;
 import univer.university.dto.response.ResPageable;
 import univer.university.entity.College;
 import univer.university.entity.Department;
-import univer.university.entity.enums.AcademicTitle;
 import univer.university.entity.enums.Level;
 import univer.university.entity.enums.Role;
 import univer.university.exception.DataNotFoundException;
@@ -40,7 +38,7 @@ public class CollageService {
     private final InfoRepository infoRepository;
 
     public ApiResponse<String> saveCollage(ReqCollage reqCollage){
-        boolean b = collageRepository.existsByName(reqCollage.getName());
+        boolean b = collageRepository.existsByNameAndActiveTrue(reqCollage.getName());
         if (b){
             return ApiResponse.error("This collage already exists");
         }
@@ -57,7 +55,7 @@ public class CollageService {
 
 
     public ApiResponse<String> updateCollage(Long collageId,ReqCollage reqCollage){
-        boolean b = collageRepository.existsByNameAndIdNot(reqCollage.getName(), collageId);
+        boolean b = collageRepository.existsByNameAndIdNotAndActiveTrue(reqCollage.getName(), collageId);
         if (b){
             return ApiResponse.error("This collage already exists");
         }
@@ -66,7 +64,9 @@ public class CollageService {
                 () -> new DataNotFoundException("This collage does not exist")
         );
         college.setName(reqCollage.getName());
-        college.setImgUrl(reqCollage.getImgUrl());
+        if(reqCollage.getImgUrl() != null){
+            college.setImgUrl(reqCollage.getImgUrl());
+        }
         collageRepository.save(college);
         return ApiResponse.success(null, "Successfully updated collage");
     }

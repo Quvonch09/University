@@ -26,7 +26,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false, unique = true)
     private String phone;
 
-    @Column(nullable = false)
     private String email;
 
     @Column(length = 2000)
@@ -41,6 +40,14 @@ public class User extends BaseEntity implements UserDetails {
     private String input;
 
     private String profession;
+
+    private String orcId;
+
+    private String scopusId;
+
+    private String scienceId;
+
+    private String researcherId;
 
     private boolean gender; // true-male, false-female
 

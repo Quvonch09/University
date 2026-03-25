@@ -27,12 +27,6 @@ public class UserController {
     }
 
 
-    @PutMapping
-    public ResponseEntity<ApiResponse<String>> update(@AuthenticationPrincipal User user, @RequestBody ReqUserDTO reqUserDto){
-        return ResponseEntity.ok(userService.update(user, reqUserDto));
-    }
-
-
     @GetMapping("/dashboard")
     public ResponseEntity<ApiResponse<ResDashboard>> getDashboard(){
         return ResponseEntity.ok(userService.getDashboard());
@@ -62,25 +56,6 @@ public class UserController {
     }
 
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<UserDTO>> getById(@PathVariable Long userId,
-                                                        @RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size){
-        return ResponseEntity.ok(userService.getById(userId, page, size));
-    }
-
-
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<ResPageable>> searchUser(@RequestParam(required = false) String name,
-                                                               @RequestParam(required = false) String college,
-                                                               @RequestParam(required = false) String lavozim,
-                                                               @RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "10") int size){
-        return ResponseEntity.ok(userService.searchUsers(name, college, lavozim, page, size));
-    }
-
-
-
 
 
     @GetMapping("/statistics/{userId}")
@@ -88,12 +63,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserDashboard(userId));
     }
 
-
-
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Long userId){
-        return ResponseEntity.ok(userService.deleteTeacher(userId));
-    }
 
 
 }

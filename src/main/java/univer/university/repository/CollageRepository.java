@@ -13,8 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface CollageRepository extends JpaRepository<College, Long> {
-    boolean existsByName(String name);
-    boolean existsByNameAndIdNot(String name, Long id);
+    boolean existsByNameAndActiveTrue(String name);
+    boolean existsByNameAndIdNotAndActiveTrue(String name, Long id);
 
     @Query(value = """
         select * from college where

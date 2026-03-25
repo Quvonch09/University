@@ -4,10 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
 import univer.university.dto.UserStatisticsDto;
+import univer.university.dto.request.ReqTeacher;
 import univer.university.dto.request.ReqUserDTO;
 import univer.university.dto.response.*;
 import univer.university.entity.College;
@@ -32,7 +35,7 @@ public class UserService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final HttpServletRequest request;
+    private final PasswordEncoder passwordEncoder;
     private final AwardService awardService;
     private final TadqiqotService tadqiqotService;
     private final PublicationService publicationService;
@@ -66,38 +69,82 @@ public class UserService {
 
     public ApiResponse<String> update(User existingUser, ReqUserDTO reqUserDTO) {
 
-        if(reqUserDTO.getId() !=0 || reqUserDTO.getId() != null){
-            existingUser = userRepository.findByIdAndEnabledTrue(reqUserDTO.getId()).orElseThrow(
-                    () -> new DataNotFoundException("User not found")
-            );
+        if (reqUserDTO.getId() != null && reqUserDTO.getId() != 0) {
+            existingUser = userRepository.findByIdAndEnabledTrue(reqUserDTO.getId())
+                    .orElseThrow(() -> new DataNotFoundException("User not found"));
         }
 
-        Lavozm lavozm = lavozimRepository.findById(reqUserDTO.getLavozmId()).orElseThrow(
-                () -> new DataNotFoundException("Lavozm not found")
-        );
+        if (reqUserDTO.getLavozmId() != null || reqUserDTO.getLavozmId() != 0) {
+            Lavozm lavozm = lavozimRepository.findById(reqUserDTO.getLavozmId())
+                    .orElseThrow(() -> new DataNotFoundException("Lavozm not found"));
+            existingUser.setLavozm(lavozm);
+        }
 
+        if (reqUserDTO.getDepartmentId() != null || reqUserDTO.getDepartmentId() != 0) {
+            Department department = departmentRepository.findByIdAndActiveTrue(reqUserDTO.getDepartmentId())
+                    .orElseThrow(() -> new DataNotFoundException("Department not found"));
+            existingUser.setDepartment(department);
+        }
 
-        Department department = departmentRepository.findByIdAndActiveTrue(reqUserDTO.getDepartmentId()).orElseThrow(
-                () -> new DataNotFoundException("Department not found")
-        );
+        if (reqUserDTO.getFullName() != null && !reqUserDTO.getFullName().isBlank()) {
+            existingUser.setFullName(reqUserDTO.getFullName());
+        }
 
+        if (reqUserDTO.getEmail() != null && !reqUserDTO.getEmail().isBlank()) {
+            existingUser.setEmail(reqUserDTO.getEmail());
+        }
 
-        existingUser.setFullName(reqUserDTO.getFullName());
-        existingUser.setEmail(reqUserDTO.getEmail());
-        existingUser.setImgUrl(reqUserDTO.getImageUrl());
-        existingUser.setAge(reqUserDTO.getAge());
-        existingUser.setBiography(reqUserDTO.getBiography());
-        existingUser.setGender(reqUserDTO.isGender());
-        existingUser.setLavozm(lavozm);
-        existingUser.setFileUrl(reqUserDTO.getFileUrl());
-        existingUser.setDepartment(department);
-        existingUser.setProfession(reqUserDTO.getProfession());
-        existingUser.setInput(reqUserDTO.getInput());
-        if (!existingUser.getPhone().equals(reqUserDTO.getPhoneNumber())){
+        if (reqUserDTO.getImageUrl() != null) {
+            existingUser.setImgUrl(reqUserDTO.getImageUrl());
+        }
+
+        if (reqUserDTO.getAge() != null) {
+            existingUser.setAge(reqUserDTO.getAge());
+        }
+
+        if (reqUserDTO.getBiography() != null) {
+            existingUser.setBiography(reqUserDTO.getBiography());
+        }
+
+        if (reqUserDTO.getGender() != null) {
+            existingUser.setGender(reqUserDTO.getGender());
+        }
+
+        if (reqUserDTO.getFileUrl() != null) {
+            existingUser.setFileUrl(reqUserDTO.getFileUrl());
+        }
+
+        if (reqUserDTO.getProfession() != null) {
+            existingUser.setProfession(reqUserDTO.getProfession());
+        }
+
+        if (reqUserDTO.getInput() != null) {
+            existingUser.setInput(reqUserDTO.getInput());
+        }
+
+        if (reqUserDTO.getOrcId() != null) {
+            existingUser.setOrcId(reqUserDTO.getOrcId());
+        }
+
+        if (reqUserDTO.getResearcherId() != null) {
+            existingUser.setResearcherId(reqUserDTO.getResearcherId());
+        }
+
+        if (reqUserDTO.getScopusId() != null) {
+            existingUser.setScopusId(reqUserDTO.getScopusId());
+        }
+
+        if (reqUserDTO.getScienceId() != null) {
+            existingUser.setScienceId(reqUserDTO.getScienceId());
+        }
+
+        if (reqUserDTO.getPhoneNumber() != null &&
+                !reqUserDTO.getPhoneNumber().equals(existingUser.getPhone())) {
             existingUser.setPhone(reqUserDTO.getPhoneNumber());
         }
 
         userRepository.save(existingUser);
+
         return ApiResponse.success(null, "Success");
     }
 
@@ -227,8 +274,69 @@ public class UserService {
                 () -> new DataNotFoundException("User not found")
         );
 
+        user.setLavozm(null);
         user.setEnabled(false);
         userRepository.save(user);
         return ApiResponse.success(null, "Success");
+    }
+
+
+    @Transactional
+    public ApiResponse<String> updateUser(User existingUser, ReqTeacher dto) {
+
+        // fullName
+        if (dto.getFullName() != null && !dto.getFullName().isBlank()) {
+            existingUser.setFullName(dto.getFullName());
+        }
+
+        // phone
+        if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isBlank()
+                && !dto.getPhoneNumber().equals(existingUser.getPhone())) {
+
+            boolean exists = userRepository.existsByPhone(dto.getPhoneNumber());
+            if (exists) {
+                throw new RuntimeException("Phone already exists");
+            }
+
+            existingUser.setPhone(dto.getPhoneNumber());
+        }
+
+        // image
+        if (dto.getImgUrl() != null) {
+            existingUser.setImgUrl(dto.getImgUrl());
+        }
+
+        // file
+        if (dto.getFileUrl() != null) {
+            existingUser.setFileUrl(dto.getFileUrl());
+        }
+
+        // gender
+        existingUser.setGender(dto.isGender());
+
+        // lavozm
+        if (dto.getLavozmId() != null) {
+            Lavozm lavozm = lavozimRepository.findById(dto.getLavozmId())
+                    .orElseThrow(() -> new DataNotFoundException("Lavozm not found"));
+
+            existingUser.setLavozm(lavozm);
+        }
+
+        // department
+        if (dto.getDepartmentId() != null) {
+            Department department = departmentRepository.findByIdAndActiveTrue(dto.getDepartmentId())
+                    .orElseThrow(() -> new DataNotFoundException("Department not found"));
+
+            existingUser.setDepartment(department);
+        }
+
+        // password
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        userRepository.save(existingUser);
+
+        return ApiResponse.success(null, "User updated successfully");
     }
 }

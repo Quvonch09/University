@@ -28,15 +28,7 @@ public class AuthController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/saveUser")
-    @Operation(summary = "Teacher saqlash uchun",
-            description = "gender = true-erkak, gender = false-ayol")
-    public ResponseEntity<ApiResponse<String>> userLogin(
-            @RequestBody AuthRegister register
-    ){
-        return ResponseEntity.ok(authService.saveUser(register));
-    }
+
 
 
 //    @PreAuthorize("hasRole('ADMIN')")
