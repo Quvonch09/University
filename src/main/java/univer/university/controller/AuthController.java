@@ -3,13 +3,8 @@ package univer.university.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
-import univer.university.dto.request.AuthRegister;
-import univer.university.entity.enums.AcademicTitle;
-import univer.university.entity.enums.Level;
-import univer.university.entity.enums.Role;
 import univer.university.service.AuthService;
 
 @RestController

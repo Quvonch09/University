@@ -14,8 +14,16 @@ public class ResUser {
     private String email;
     private int age;
     private boolean gender;
+    private String orcId;
+
+    private String scopusId;
+
+    private String scienceId;
+
+    private String researcherId;
     private String profession;
     private String imgUrl;
+    private String fileUrl;
     private String input;
     private String phoneNumber;
     private String departmentName;

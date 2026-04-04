@@ -65,9 +65,8 @@ public class TeacherController {
 
     @PutMapping("/edit")
     public ResponseEntity<ApiResponse<String>> updateMe(
-            @AuthenticationPrincipal User user,
             @RequestBody ReqTeacher dto) {
 
-        return ResponseEntity.ok(userService.updateUser(user, dto));
+        return ResponseEntity.ok(userService.updateUser(dto));
     }
 }
