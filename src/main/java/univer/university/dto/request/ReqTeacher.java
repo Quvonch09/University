@@ -9,6 +9,8 @@ import lombok.*;
 @Builder
 public class ReqTeacher {
 
+    private Long id;
+
     private String fullName;
 
     private String phoneNumber;

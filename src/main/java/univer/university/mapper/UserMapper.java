@@ -16,6 +16,10 @@ public class UserMapper {
                 .phone(user.getPhone())
                 .imageUrl(user.getImgUrl())
                 .fullName(user.getFullName())
+                .orcId(user.getOrcId())
+                .researcherId(user.getResearcherId())
+                .scienceId(user.getScienceId())
+                .scopusId(user.getScopusId())
                 .build();
     }
 
@@ -32,8 +36,13 @@ public class UserMapper {
                 .profession(user.getProfession())
                 .departmentName(user.getDepartment() != null ? user.getDepartment().getName():null)
                 .imgUrl(user.getImgUrl())
+                .fileUrl(user.getFileUrl())
                 .lavozim(user.getLavozm().getName())
                 .phoneNumber(user.getPhone())
+                .orcId(user.getOrcId())
+                .researcherId(user.getResearcherId())
+                .scienceId(user.getScienceId())
+                .scopusId(user.getScopusId())
                 .build();
     }
 

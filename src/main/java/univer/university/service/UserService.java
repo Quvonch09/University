@@ -1,6 +1,5 @@
 package univer.university.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,11 +21,13 @@ import univer.university.entity.enums.PublicTypeEnum;
 import univer.university.entity.enums.Role;
 import univer.university.exception.DataNotFoundException;
 import univer.university.mapper.UserMapper;
+import univer.university.component.annotation.TrackAction;
+import univer.university.entity.enums.ActionType;
 import univer.university.repository.*;
 import univer.university.security.JwtService;
 
+
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +51,7 @@ public class UserService {
     private final DepartmentRepository departmentRepository;
     private final LavozimRepository lavozimRepository;
     private final CollageRepository collageRepository;
+    private final AcademicQualificationRepository academicQualificationRepository;
 
     public ApiResponse<UserDTO> getMe(User user){
         return ApiResponse.success(userMapper.userDTO(user), "Success");
@@ -67,6 +69,7 @@ public class UserService {
     }
 
 
+    @TrackAction(ActionType.USER_UPDATED)
     public ApiResponse<String> update(User existingUser, ReqUserDTO reqUserDTO) {
 
         if (reqUserDTO.getId() != null && reqUserDTO.getId() != 0) {
@@ -74,73 +77,93 @@ public class UserService {
                     .orElseThrow(() -> new DataNotFoundException("User not found"));
         }
 
-        if (reqUserDTO.getLavozmId() != null || reqUserDTO.getLavozmId() != 0) {
+        if (existingUser.getRole().equals(Role.ROLE_ADMIN)){
+            return ApiResponse.error("Adminni tahrirlash mumkin emas");
+        }
+
+        if (reqUserDTO.getLavozmId() != null && reqUserDTO.getLavozmId() != 0) {
             Lavozm lavozm = lavozimRepository.findById(reqUserDTO.getLavozmId())
                     .orElseThrow(() -> new DataNotFoundException("Lavozm not found"));
             existingUser.setLavozm(lavozm);
+            userRepository.save(existingUser);
         }
 
-        if (reqUserDTO.getDepartmentId() != null || reqUserDTO.getDepartmentId() != 0) {
+        if (reqUserDTO.getDepartmentId() != null && reqUserDTO.getDepartmentId() != 0) {
             Department department = departmentRepository.findByIdAndActiveTrue(reqUserDTO.getDepartmentId())
                     .orElseThrow(() -> new DataNotFoundException("Department not found"));
             existingUser.setDepartment(department);
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getFullName() != null && !reqUserDTO.getFullName().isBlank()) {
             existingUser.setFullName(reqUserDTO.getFullName());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getEmail() != null && !reqUserDTO.getEmail().isBlank()) {
             existingUser.setEmail(reqUserDTO.getEmail());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getImageUrl() != null) {
             existingUser.setImgUrl(reqUserDTO.getImageUrl());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getAge() != null) {
             existingUser.setAge(reqUserDTO.getAge());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getBiography() != null) {
             existingUser.setBiography(reqUserDTO.getBiography());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getGender() != null) {
             existingUser.setGender(reqUserDTO.getGender());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getFileUrl() != null) {
             existingUser.setFileUrl(reqUserDTO.getFileUrl());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getProfession() != null) {
             existingUser.setProfession(reqUserDTO.getProfession());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getInput() != null) {
             existingUser.setInput(reqUserDTO.getInput());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getOrcId() != null) {
             existingUser.setOrcId(reqUserDTO.getOrcId());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getResearcherId() != null) {
             existingUser.setResearcherId(reqUserDTO.getResearcherId());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getScopusId() != null) {
             existingUser.setScopusId(reqUserDTO.getScopusId());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getScienceId() != null) {
             existingUser.setScienceId(reqUserDTO.getScienceId());
+            userRepository.save(existingUser);
         }
 
         if (reqUserDTO.getPhoneNumber() != null &&
                 !reqUserDTO.getPhoneNumber().equals(existingUser.getPhone())) {
             existingUser.setPhone(reqUserDTO.getPhoneNumber());
+            userRepository.save(existingUser);
         }
 
         userRepository.save(existingUser);
@@ -269,10 +292,15 @@ public class UserService {
 
 
 
+    @TrackAction(ActionType.TEACHER_DELETED)
     public ApiResponse<String> deleteTeacher(Long userId){
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new DataNotFoundException("User not found")
         );
+        
+        if (user.getRole().equals(Role.ROLE_ADMIN)){
+            return ApiResponse.error("Adminni o'chirish mumkin emas");
+        }
 
         user.setLavozm(null);
         user.setEnabled(false);
@@ -281,8 +309,17 @@ public class UserService {
     }
 
 
+    @TrackAction(ActionType.TEACHER_UPDATED)
     @Transactional
-    public ApiResponse<String> updateUser(User existingUser, ReqTeacher dto) {
+    public ApiResponse<String> updateUser(ReqTeacher dto) {
+
+        User existingUser = userRepository.findByIdAndEnabledTrue(dto.getId()).orElseThrow(
+                () -> new DataNotFoundException("User not found")
+        );
+
+        if (existingUser.getRole().equals(Role.ROLE_ADMIN)){
+            return ApiResponse.error("Adminni tahrirlash mumkin emas");
+        }
 
         // fullName
         if (dto.getFullName() != null && !dto.getFullName().isBlank()) {
@@ -338,5 +375,44 @@ public class UserService {
         userRepository.save(existingUser);
 
         return ApiResponse.success(null, "User updated successfully");
+    }
+
+    public ApiResponse<Double> getProfileCompletionPercentage(Long userId) {
+        User user = userRepository.findByIdAndEnabledTrue(userId).orElseThrow(
+                () -> new DataNotFoundException("User not found")
+        );
+
+        double totalPoints = 22.0;
+        double filledPoints = 0.0;
+
+        // 1. User properties (16 units)
+        if (user.getFullName() != null && !user.getFullName().isBlank()) filledPoints++;
+        if (user.getPhone() != null && !user.getPhone().isBlank()) filledPoints++;
+        if (user.getEmail() != null && !user.getEmail().isBlank()) filledPoints++;
+        if (user.getBiography() != null && !user.getBiography().isBlank()) filledPoints++;
+        if (user.getAge() > 0) filledPoints++;
+        if (user.getImgUrl() != null && !user.getImgUrl().isBlank()) filledPoints++;
+        if (user.getFileUrl() != null && !user.getFileUrl().isBlank()) filledPoints++;
+        if (user.getInput() != null && !user.getInput().isBlank()) filledPoints++;
+        if (user.getProfession() != null && !user.getProfession().isBlank()) filledPoints++;
+        if (user.getOrcId() != null && !user.getOrcId().isBlank()) filledPoints++;
+        if (user.getScopusId() != null && !user.getScopusId().isBlank()) filledPoints++;
+        if (user.getScienceId() != null && !user.getScienceId().isBlank()) filledPoints++;
+        if (user.getResearcherId() != null && !user.getResearcherId().isBlank()) filledPoints++;
+        // Gender is boolean primitive, so it always has a value (true/false)
+        filledPoints++; 
+        if (user.getDepartment() != null) filledPoints++;
+        if (user.getLavozm() != null) filledPoints++;
+
+        // 2. Related data presence (6 units)
+        if (tadqiqotRepository.countAllByUserId(userId) > 0) filledPoints++;
+        if (publicationRepository.countAllByUserId(userId) > 0) filledPoints++;
+        if (awardRepository.countAllByUserId(userId) > 0) filledPoints++;
+        if (consultationRepository.countAllByUserId(userId) > 0) filledPoints++;
+        if (nazoratRepository.countAllByUserId(userId) > 0) filledPoints++;
+        if (academicQualificationRepository.countAllByUserId(userId) > 0) filledPoints++;
+
+        double percentage = (filledPoints / totalPoints) * 100;
+        return ApiResponse.success(Math.round(percentage * 100.0) / 100.0, "Success");
     }
 }

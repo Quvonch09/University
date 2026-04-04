@@ -63,6 +63,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserDashboard(userId));
     }
 
-
+    @GetMapping("/profile-completion/{userId}")
+    public ResponseEntity<ApiResponse<Double>> getProfileCompletion(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getProfileCompletionPercentage(userId));
+    }
 
 }

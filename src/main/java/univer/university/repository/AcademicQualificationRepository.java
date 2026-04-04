@@ -14,4 +14,6 @@ public interface AcademicQualificationRepository extends JpaRepository<AcademicQ
     select * from academic_qualification where user_id = ?1
     """, nativeQuery = true)
     Page<AcademicQualification> findAllByUserId(Long userId, Pageable pageable);
+
+    long countAllByUserId(Long userId);
 }

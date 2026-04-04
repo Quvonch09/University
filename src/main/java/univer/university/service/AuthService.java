@@ -4,14 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
-import univer.university.dto.request.AuthRegister;
 import univer.university.dto.request.ReqTeacher;
 import univer.university.entity.Department;
 import univer.university.entity.Lavozm;
 import univer.university.entity.User;
-import univer.university.entity.UserInfo;
-import univer.university.entity.enums.AcademicTitle;
-import univer.university.entity.enums.Level;
 import univer.university.entity.enums.Role;
 import univer.university.exception.DataNotFoundException;
 import univer.university.repository.DepartmentRepository;
@@ -19,6 +15,8 @@ import univer.university.repository.LavozimRepository;
 import univer.university.repository.UserInfoRepository;
 import univer.university.repository.UserRepository;
 import univer.university.security.JwtService;
+import univer.university.component.annotation.TrackAction;
+import univer.university.entity.enums.ActionType;
 
 import java.util.Optional;
 
@@ -32,6 +30,7 @@ public class AuthService {
     private final UserInfoRepository userInfoRepository;
     private final LavozimRepository lavozimRepository;
 
+    @TrackAction(ActionType.LOGIN)
     public ApiResponse<String> login(String phone, String password) {
         Optional<User> optionalUser = userRepository.findByPhone(phone);
 
@@ -57,6 +56,7 @@ public class AuthService {
     }
 
 
+    @TrackAction(ActionType.TEACHER_CREATED)
     public ApiResponse<String> saveUser(ReqTeacher authRegister){
 
         boolean b = userRepository.existsByPhoneAndRole(authRegister.getPhoneNumber(), Role.ROLE_TEACHER);
