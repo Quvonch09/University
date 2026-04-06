@@ -405,12 +405,12 @@ public class UserService {
         if (user.getLavozm() != null) filledPoints++;
 
         // 2. Related data presence (6 units)
-        if (tadqiqotRepository.countAllByUserId(userId) > 0) filledPoints++;
-        if (publicationRepository.countAllByUserId(userId) > 0) filledPoints++;
-        if (awardRepository.countAllByUserId(userId) > 0) filledPoints++;
-        if (consultationRepository.countAllByUserId(userId) > 0) filledPoints++;
-        if (nazoratRepository.countAllByUserId(userId) > 0) filledPoints++;
-        if (academicQualificationRepository.countAllByUserId(userId) > 0) filledPoints++;
+//        if (tadqiqotRepository.countAllByUserId(userId) > 0) filledPoints++;
+//        if (publicationRepository.countAllByUserId(userId) > 0) filledPoints++;
+//        if (awardRepository.countAllByUserId(userId) > 0) filledPoints++;
+//        if (consultationRepository.countAllByUserId(userId) > 0) filledPoints++;
+//        if (nazoratRepository.countAllByUserId(userId) > 0) filledPoints++;
+//        if (academicQualificationRepository.countAllByUserId(userId) > 0) filledPoints++;
 
         double percentage = (filledPoints / totalPoints) * 100;
         return ApiResponse.success(Math.round(percentage * 100.0) / 100.0, "Success");
