@@ -57,6 +57,9 @@ public class User extends BaseEntity implements UserDetails {
     @ManyToOne
     private Lavozm lavozm;
 
+    @ManyToOne
+    private IlmiyDaraja ilmiyDaraja;
+
     @Column(nullable = false)
     private String password;
 
