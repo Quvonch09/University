@@ -1,5 +1,7 @@
 package univer.university.service;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.UserDTO;
 import univer.university.dto.UserStatisticsDto;
+import univer.university.dto.request.ReqPassword;
 import univer.university.dto.request.ReqTeacher;
 import univer.university.dto.request.ReqUserDTO;
 import univer.university.dto.response.*;
@@ -415,7 +418,25 @@ public class UserService {
         double percentage = (filledPoints / totalPoints) * 100;
         return ApiResponse.success(Math.round(percentage * 100.0) / 100.0, "Success");
     }
-    public ApiResponse<String> updatePassword(Long userId, String oldPassword, String newPassword) {
-        return null;
+//                Password qismi---------------------->
+    public ApiResponse<String> updatePassword(User user, ReqPassword reqPassword){
+        if (reqPassword.getUserId() != 0 || reqPassword.getPassword() == null){
+            user = userRepository.findById(reqPassword.getUserId()).orElseThrow(
+                    () -> new DataNotFoundException("User topilmadi")
+            );
+
+            user.setPassword(passwordEncoder.encode(reqPassword.getPassword()));
+            userRepository.save(user);
+            return ApiResponse.success(null, "Success");
+        }
+
+        user.setPassword(passwordEncoder.encode(reqPassword.getPassword()));
+        User save = userRepository.save(user);
+        String token = jwtService.generateToken(
+                save.getUsername(),
+                save.getRole().name()
+        );
+        return ApiResponse.success(token, "Success");
     }
+
 }
