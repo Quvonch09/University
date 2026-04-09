@@ -418,7 +418,7 @@ public class UserService {
         double percentage = (filledPoints / totalPoints) * 100;
         return ApiResponse.success(Math.round(percentage * 100.0) / 100.0, "Success");
     }
-
+//                Password qismi---------------------->
     public ApiResponse<String> updatePassword(User user, ReqPassword reqPassword){
         if (reqPassword.getUserId() != 0 || reqPassword.getPassword() == null){
             user = userRepository.findById(reqPassword.getUserId()).orElseThrow(
