@@ -415,4 +415,7 @@ public class UserService {
         double percentage = (filledPoints / totalPoints) * 100;
         return ApiResponse.success(Math.round(percentage * 100.0) / 100.0, "Success");
     }
+    public ApiResponse<String> updatePassword(Long userId, String oldPassword, String newPassword) {
+        return null;
+    }
 }
