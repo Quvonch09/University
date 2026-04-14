@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
+import univer.university.dto.IlmiyDarajaStatsDTO;
 import univer.university.dto.request.ReqIlmiyDaraja;
 import univer.university.dto.response.ResIlmiyDaraja;
 import univer.university.service.IlmiyDarajaService;
@@ -42,5 +43,11 @@ public class IlmiyDarajaController {
     @GetMapping("/get-ilmiy-daraja-statistiks")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getIlmiyDarajaStatistics() {
         return ResponseEntity.ok(ilmiyDarajaService.getIlmiyDarajaStatistics());
+    }
+
+
+    @GetMapping("/stats")
+    public ResponseEntity<ApiResponse<List<IlmiyDarajaStatsDTO>>> getIlmiyDarajaStats() {
+        return ResponseEntity.ok(ilmiyDarajaService.getStats());
     }
 }

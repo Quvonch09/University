@@ -24,4 +24,13 @@ public interface IlmiyDarajaRepository extends JpaRepository<IlmiyDaraja, Long> 
             nativeQuery = true
     )
     List<Object[]> getIlmiyDarajaStats();
+
+
+    @Query(value = """
+    SELECT i.name, COUNT(u.id)
+    FROM ilmiy_daraja i
+    LEFT JOIN users u ON u.ilmiy_daraja_id = i.id
+    GROUP BY i.id, i.name
+""", nativeQuery = true)
+    List<Object[]> getIlmiyDarajaStats2();
 }
