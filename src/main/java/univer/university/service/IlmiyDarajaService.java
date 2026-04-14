@@ -3,14 +3,18 @@ package univer.university.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import univer.university.dto.ApiResponse;
+import univer.university.dto.IlmiyDarajaStatsDTO;
+import univer.university.dto.UserDTO;
 import univer.university.dto.request.ReqIlmiyDaraja;
 import univer.university.dto.response.ResIlmiyDaraja;
 import univer.university.dto.response.ResIlmiyDarajaStatistics;
 import univer.university.entity.IlmiyDaraja;
+import univer.university.entity.User;
 import univer.university.exception.DataNotFoundException;
 import univer.university.repository.IlmiyDarajaRepository;
 import univer.university.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,5 +103,37 @@ public class IlmiyDarajaService {
                 .id(ilmiyDaraja.getId())
                 .name(ilmiyDaraja.getName())
                 .build();
+    }
+
+
+    public ApiResponse<List<IlmiyDarajaStatsDTO>> getStats() {
+
+        List<IlmiyDaraja> darajalar = ilmiyDarajaRepository.findAll();
+
+        List<IlmiyDarajaStatsDTO> result = new ArrayList<>();
+
+        for (IlmiyDaraja daraja : darajalar) {
+
+            List<User> users = userRepository.findAllByIlmiyDaraja_Id(daraja.getId());
+
+            List<UserDTO> userDTOS = users.stream().map(u ->
+                    UserDTO.builder()
+                            .id(u.getId())
+                            .fullName(u.getFullName())
+                            .email(u.getEmail())
+                            .phone(u.getPhone())
+                            .build()
+            ).toList();
+
+            result.add(
+                    IlmiyDarajaStatsDTO.builder()
+                            .ilmiyDarajaName(daraja.getName())
+                            .userCount((long) users.size())
+                            .users(userDTOS)
+                            .build()
+            );
+        }
+
+        return ApiResponse.success(result, "Success");
     }
 }

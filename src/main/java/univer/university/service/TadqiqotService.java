@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import univer.university.component.annotation.TrackAction;
 import univer.university.dto.ApiResponse;
 import univer.university.dto.request.ReqTadqiqot;
 import univer.university.dto.response.ResPageable;
 import univer.university.entity.Tadqiqot;
 import univer.university.entity.User;
+import univer.university.entity.enums.ActionType;
 import univer.university.exception.DataNotFoundException;
 import univer.university.mapper.TadqiqotMapper;
 import univer.university.repository.TadqiqotRepository;
@@ -23,6 +25,7 @@ public class TadqiqotService {
     private final UserRepository userRepository;
     private final TadqiqotMapper tadqiqotMapper;
 
+    @TrackAction(ActionType.TADQIQOT_CREATED)
     public ApiResponse<String> saveTadqiqot(ReqTadqiqot reqTadqiqot) {
 
 

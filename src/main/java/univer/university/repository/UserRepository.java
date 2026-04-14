@@ -204,15 +204,111 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     @Query(value = """
-    select u.* from users u join department d on d.id = u.department_id join college c on d.college_id = c.id
-    join lavozm l on l.id = u.lavozm_id where u.role <> 'ROLE_ADMIN' and u.enabled = true and
-    (:name IS NULL OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :name, '%'))) AND
-    (:college IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :college, '%')) OR
-     LOWER(c.name) LIKE LOWER(CONCAT('%', :college, '%'))) AND
-    (:lavozim IS NULL OR LOWER(l.name) LIKE LOWER(CONCAT('%', :lavozim, '%'))) order by u.created_at desc
-    """, nativeQuery = true)
-    Page<User> findAllByUser(@Param("name") String name,
-                             @Param("college") String college,
-                             @Param("lavozim") String lavozim,
-                             Pageable pageable);
+    SELECT *
+    FROM (
+        SELECT u.*,
+
+        (
+            CASE 
+                WHEN 
+                    COALESCE(u.full_name, '') <> '' AND
+                    COALESCE(u.phone, '') <> '' AND
+                    COALESCE(u.email, '') <> '' AND
+                    COALESCE(u.biography, '') <> '' AND
+                    u.age <> 0 AND
+                    COALESCE(u.profession, '') <> '' AND
+                    u.department_id IS NOT NULL AND
+                    u.lavozm_id IS NOT NULL AND
+                    COALESCE(u.orc_id, '') <> '' AND
+                    COALESCE(u.researcher_id, '') <> '' AND
+                    COALESCE(u.file_url, '') <> '' AND
+                    COALESCE(u.img_url, '') <> '' AND
+                    COALESCE(u.science_id, '') <> '' AND
+                    COALESCE(u.scopus_id, '') <> '' AND
+                    COALESCE(u.input, '') <> '' AND
+                    u.ilmiy_daraja_id IS NOT NULL
+                THEN 1 ELSE 0
+            END
+        ) as profile_complete,
+
+        (
+            (CASE WHEN COALESCE(u.full_name, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.phone, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.email, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.biography, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN u.age <> 0 THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.profession, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN u.department_id IS NOT NULL THEN 1 ELSE 0 END) +
+            (CASE WHEN u.lavozm_id IS NOT NULL THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.orc_id, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.researcher_id, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.file_url, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.img_url, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.science_id, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.scopus_id, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN COALESCE(u.input, '') <> '' THEN 1 ELSE 0 END) +
+            (CASE WHEN u.ilmiy_daraja_id IS NOT NULL THEN 1 ELSE 0 END)
+        ) as profile_score,
+
+        COUNT(DISTINCT t.id) as tadqiqot_count,
+        COUNT(DISTINCT p.id) as publication_count,
+        COUNT(DISTINCT cs.id) as consultation_count,
+        COUNT(DISTINCT a.id) as award_count
+
+        FROM users u
+        JOIN department d ON d.id = u.department_id
+        JOIN college c ON c.id = d.college_id
+        JOIN lavozm l ON l.id = u.lavozm_id
+
+        LEFT JOIN tadqiqot t ON t.user_id = u.id
+        LEFT JOIN publication p ON p.user_id = u.id
+        LEFT JOIN consultation cs ON cs.user_id = u.id
+        LEFT JOIN award a ON a.user_id = u.id
+
+        WHERE u.role <> 'ROLE_ADMIN'
+          AND u.enabled = true
+
+          AND (:name IS NULL OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :name, '%')))
+          AND (:college IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :college, '%')) 
+               OR LOWER(c.name) LIKE LOWER(CONCAT('%', :college, '%')))
+          AND (:lavozim IS NULL OR LOWER(l.name) LIKE LOWER(CONCAT('%', :lavozim, '%')))
+
+        GROUP BY u.id
+    ) as result
+
+    ORDER BY
+        profile_complete DESC,
+        profile_score DESC,
+        tadqiqot_count DESC,
+        publication_count DESC,
+        consultation_count DESC,
+        award_count DESC,
+        created_at DESC
+    """,
+
+            countQuery = """
+        SELECT COUNT(DISTINCT u.id)
+        FROM users u
+        JOIN department d ON d.id = u.department_id
+        JOIN college c ON c.id = d.college_id
+        JOIN lavozm l ON l.id = u.lavozm_id
+
+        WHERE u.role <> 'ROLE_ADMIN'
+          AND u.enabled = true
+
+          AND (:name IS NULL OR LOWER(u.full_name) LIKE LOWER(CONCAT('%', :name, '%')))
+          AND (:college IS NULL OR LOWER(d.name) LIKE LOWER(CONCAT('%', :college, '%')) 
+               OR LOWER(c.name) LIKE LOWER(CONCAT('%', :college, '%')))
+          AND (:lavozim IS NULL OR LOWER(l.name) LIKE LOWER(CONCAT('%', :lavozim, '%')))
+    """,
+
+            nativeQuery = true)
+    Page<User> findAllByUser(
+            @Param("name") String name,
+            @Param("college") String college,
+            @Param("lavozim") String lavozim,
+            Pageable pageable);
+
+
+    List<User> findAllByIlmiyDaraja_Id(Long ilmiyDarajaId);
 }
