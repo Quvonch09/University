@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import univer.university.dto.ApiResponse;
+import univer.university.dto.ScientificDTO;
 import univer.university.dto.UserDTO;
 import univer.university.dto.UserStatisticsDto;
 import univer.university.dto.request.ReqUserDTO;
@@ -66,6 +67,13 @@ public class UserController {
     @GetMapping("/profile-completion/{userId}")
     public ResponseEntity<ApiResponse<Double>> getProfileCompletion(@PathVariable Long userId){
         return ResponseEntity.ok(userService.getProfileCompletionPercentage(userId));
+    }
+
+
+
+    @GetMapping("/scientific")
+    public ResponseEntity<ApiResponse<List<ScientificDTO>>>  getScientific(){
+        return ResponseEntity.ok(userService.getScientificInfo());
     }
 
 }
