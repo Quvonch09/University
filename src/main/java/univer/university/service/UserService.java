@@ -8,9 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import univer.university.dto.ApiResponse;
-import univer.university.dto.UserDTO;
-import univer.university.dto.UserStatisticsDto;
+import univer.university.dto.*;
 import univer.university.dto.request.ReqPassword;
 import univer.university.dto.request.ReqTeacher;
 import univer.university.dto.request.ReqUserDTO;
@@ -30,6 +28,7 @@ import univer.university.repository.*;
 import univer.university.security.JwtService;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -437,6 +436,24 @@ public class UserService {
                 save.getRole().name()
         );
         return ApiResponse.success(token, "Success");
+    }
+
+
+
+
+
+    public ApiResponse<List<ScientificDTO>> getScientificInfo() {
+
+        StatsProjection result = userRepository.getAllCounts();
+
+        List<ScientificDTO> list = List.of(
+                new ScientificDTO("Tadqiqot", result.getTadqiqot()),
+                new ScientificDTO("Maslahat", result.getConsultation()),
+                new ScientificDTO("Mukofot", result.getAward()),
+                new ScientificDTO("Nashr", result.getPublication())
+        );
+
+        return ApiResponse.success(list, "Success");
     }
 
 }

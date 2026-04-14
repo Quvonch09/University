@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import univer.university.dto.StatsProjection;
 import univer.university.dto.response.AgeGenderStatsProjection;
 import univer.university.dto.response.GenderStatsProjection;
 import univer.university.entity.User;
@@ -311,4 +312,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     List<User> findAllByIlmiyDaraja_Id(Long ilmiyDarajaId);
+
+
+    @Query(value = """
+    SELECT 
+        (SELECT COUNT(*) FROM tadqiqot) as tadqiqot,
+        (SELECT COUNT(*) FROM consultation) as consultation,
+        (SELECT COUNT(*) FROM award) as award,
+        (SELECT COUNT(*) FROM publication) as publication
+""", nativeQuery = true)
+    StatsProjection getAllCounts();
 }
